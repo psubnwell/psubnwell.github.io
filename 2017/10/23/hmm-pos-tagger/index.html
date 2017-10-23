@@ -79,7 +79,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="HMM, Python, Viterbi," />
 
 
 
@@ -95,12 +95,27 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="0 说明  本文代码对应Graham Neubig的nlptutorial系列中的第四讲Part of Speech Tagging with Hidden Markov Models，主要讲解用隐马尔科夫模型（Hidden Markov Model，HMM）实现一个词性标注器。 对应Slides位于此处。 本文的示例代码位于此处。 依赖  Python3 numpy  建议在阅读代码（4 HMM">
+<meta name="keywords" content="HMM, Python, Viterbi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于HMM模型的词性标注器Python实现">
+<meta property="og:url" content="http://yoursite.com/2017/10/23/hmm-pos-tagger/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="0 说明  本文代码对应Graham Neubig的nlptutorial系列中的第四讲Part of Speech Tagging with Hidden Markov Models，主要讲解用隐马尔科夫模型（Hidden Markov Model，HMM）实现一个词性标注器。 对应Slides位于此处。 本文的示例代码位于此处。 依赖  Python3 numpy  建议在阅读代码（4 HMM">
+<meta property="og:image" content="http://yoursite.com/2017/10/23/hmm-pos-tagger/hmm_1.png">
+<meta property="og:image" content="http://yoursite.com/2017/10/23/hmm-pos-tagger/hmm_2.png">
+<meta property="og:image" content="http://yoursite.com/2017/10/23/hmm-pos-tagger/dp_1.png">
+<meta property="og:image" content="http://yoursite.com/2017/10/23/hmm-pos-tagger/dp_2.png">
+<meta property="og:image" content="http://yoursite.com/2017/10/23/hmm-pos-tagger/best_path.png">
+<meta property="og:image" content="http://yoursite.com/2017/10/23/hmm-pos-tagger/lattice.png">
+<meta property="og:image" content="http://yoursite.com/2017/10/23/hmm-pos-tagger/forward_first.png">
+<meta property="og:image" content="http://yoursite.com/2017/10/23/hmm-pos-tagger/forward_middle.png">
+<meta property="og:image" content="http://yoursite.com/2017/10/23/hmm-pos-tagger/forward_final.png">
+<meta property="og:updated_time" content="2017-10-23T08:25:29.293Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
+<meta name="twitter:title" content="基于HMM模型的词性标注器Python实现">
+<meta name="twitter:description" content="0 说明  本文代码对应Graham Neubig的nlptutorial系列中的第四讲Part of Speech Tagging with Hidden Markov Models，主要讲解用隐马尔科夫模型（Hidden Markov Model，HMM）实现一个词性标注器。 对应Slides位于此处。 本文的示例代码位于此处。 依赖  Python3 numpy  建议在阅读代码（4 HMM">
+<meta name="twitter:image" content="http://yoursite.com/2017/10/23/hmm-pos-tagger/hmm_1.png">
 
 
 
@@ -130,13 +145,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/10/23/hmm-pos-tagger/"/>
 
 
 
 
 
-  <title>Hexo</title>
+  <title>基于HMM模型的词性标注器Python实现 | Hexo</title>
   
 
 
@@ -155,8 +170,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -229,9 +243,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -261,9 +275,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/10/23/hmm-pos-tagger/" itemprop="url">基于HMM模型的词性标注器Python实现</a></h1>
+          <h1 class="post-title" itemprop="name headline">基于HMM模型的词性标注器Python实现</h1>
         
 
         <div class="post-meta">
@@ -313,9 +325,7 @@
       
 
       
-        
-          
-            <h2 id="说明">0 说明</h2>
+        <h2 id="说明">0 说明</h2>
 <ul>
 <li><p>本文代码对应Graham Neubig的<a href="https://github.com/neubig/nlptutorial" target="_blank" rel="external">nlptutorial</a>系列中的第四讲<strong>Part of Speech Tagging with Hidden Markov Models</strong>，主要讲解用<strong>隐马尔科夫模型（Hidden Markov Model，HMM）</strong>实现一个<strong>词性标注器</strong>。</p></li>
 <li><p>对应Slides位于<a href="https://github.com/neubig/nlptutorial/tree/master/download/04-hmm" target="_blank" rel="external">此处</a>。</p></li>
@@ -492,8 +502,6 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
 <li>数学之美, 吴军 著</li>
 </ol>
 
-          
-        
       
     </div>
     
@@ -508,267 +516,36 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/14/test-my-site/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="John Doe">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/14/test-my-site/" itemprop="url">test_my_site</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-14T16:15:58+08:00">
-                2017-09-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-
+            <a href="/tags/HMM-Python-Viterbi/" rel="tag"># HMM, Python, Viterbi</a>
           
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+      
       
       
 
       
-        
-          
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/14/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="John Doe">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/14/hello-world/" itemprop="url">Hello World</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
+              <a href="/2017/09/14/test-my-site/" rel="next" title="test_my_site">
+                <i class="fa fa-chevron-left"></i> test_my_site
+              </a>
             
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-14T15:54:15+08:00">
-                2017-09-14
-              </time>
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
             
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="quick-start">Quick Start</h2>
-<h3 id="create-a-new-post">Create a new post</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="run-server">Run server</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="generate-static-files">Generate static files</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="deploy-to-remote-sites">Deploy to remote sites</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -778,10 +555,11 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -789,6 +567,10 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -809,8 +591,17 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           
             <p class="site-author-name" itemprop="name">John Doe</p>
@@ -862,6 +653,22 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#说明"><span class="nav-number">1.</span> <span class="nav-text">0 说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成式模型基础"><span class="nav-number">2.</span> <span class="nav-text">1 生成式模型基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hmm-基础"><span class="nav-number">3.</span> <span class="nav-text">2 HMM 基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hmm-真实例子"><span class="nav-number">4.</span> <span class="nav-text">3 HMM 真实例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hmm-训练"><span class="nav-number">5.</span> <span class="nav-text">4 HMM 训练</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hmm-随机采样"><span class="nav-number">6.</span> <span class="nav-text">5 HMM 随机采样</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态规划思想"><span class="nav-number">7.</span> <span class="nav-text">6 动态规划思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hmm-测试维特比算法"><span class="nav-number">8.</span> <span class="nav-text">7 HMM 测试（维特比算法）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">9.</span> <span class="nav-text">8 参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -989,6 +796,10 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
 
   
 
