@@ -315,7 +315,7 @@
       
         
           
-            <h2 id="说明">0 说明</h2>
+            <h2 id="说明">说明</h2>
 <ul>
 <li><p>本文代码对应Graham Neubig的<a href="https://github.com/neubig/nlptutorial" target="_blank" rel="external">nlptutorial</a>系列中的第四讲<strong>Part of Speech Tagging with Hidden Markov Models</strong>，主要讲解用<strong>隐马尔科夫模型（Hidden Markov Model，HMM）</strong>实现一个<strong>词性标注器</strong>。</p></li>
 <li><p>对应Slides位于<a href="https://github.com/neubig/nlptutorial/tree/master/download/04-hmm" target="_blank" rel="external">此处</a>。</p></li>
@@ -325,9 +325,9 @@
 <li><code>Python3</code></li>
 <li><code>numpy</code></li>
 </ul></li>
-<li><p>建议在阅读代码（<code>4 HMM 训练</code>~<code>7 HMM 测试（维特比算法）</code>小节）之前，至少需要过一遍简单的真实例子（<code>3 HMM 真实例子</code>小节），知道代码在干什么。也建议快速读一下基础部分（<code>1 生成式模型基础</code>和<code>2 HMM 基础</code>），该部分既不严谨也不全面，但对于阅读代码而言足够。</p></li>
+<li><p>建议在阅读代码（<code>5 HMM 训练</code>~<code>8 HMM 测试（维特比算法）</code>小节）之前，至少需要过一遍简单的真实例子（<code>4 HMM 真实例子</code>小节），知道代码在干什么。也建议快速读一下基础部分（<code>1 HMM 基础</code>和<code>2 生成式模型基础</code>），该部分既不严谨也不全面，但对于阅读代码而言足够。</p></li>
 </ul>
-<h2 id="生成式模型基础">1 生成式模型基础</h2>
+<h2 id="生成式模型基础">生成式模型基础</h2>
 <ul>
 <li><p><span class="math inline">\(x = x_1, x_2, ..., x_n\)</span> 观察变量，本文中可以视为单词序列。</p></li>
 <li><p><span class="math inline">\(y = y_1, y_2, ..., y_n\)</span> 隐变量（状态变量），本文中可以视为词性序列。</p></li>
@@ -391,7 +391,7 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
 <li><p>“<span class="math inline">\(P(你|代词)P(很|副词)P(美|形容词)\)</span>”叫做<strong>发射概率（emission probability）</strong>，字面意思是从一个词性中<strong>发射/生成</strong>出某一个单词的概率。比如<span class="math inline">\(P(你|代词)\)</span>表示从这么多代词中选一个对应的单词，这个单词为“你”的可能性是多少。</p></li>
 <li><p>“<span class="math inline">\(P(代词|&lt;s&gt;)P(副词|代词)P(形容词|副词)P(&lt;/s&gt;|形容词)\)</span>”叫做<strong>转移概率（transition probability）</strong>，表示从一个词性转移到下一个词性的概率。比如<span class="math inline">\(P(副词|代词)\)</span>表示上一个词的词性是代词，那么下一个词的词性是副词的概率是多少。</p></li>
 <li><p>发射概率和转移概率都可以从标注文档中通过统计得到。</p></li>
-<li><p>HMM 主要分为两部分：训练和解码。分别对应本文档中的<code>3 HMM 训练</code>和<code>6 HMM 测试（维特比算法）</code>。对应代码中的<code>train_hmm.py</code>和<code>test_hmm.py</code>。</p></li>
+<li><p>HMM 主要分为两部分：训练和解码。分别对应本文档中的<code>5 HMM 训练</code>和<code>8 HMM 测试（维特比算法）</code>。对应代码中的<code>train_hmm.py</code>和<code>test_hmm.py</code>。</p></li>
 <li><p><strong>最后要注意一点是：上面的概率有的值很小，相乘后就更小了，限于计算机的精度，相乘容易造成下溢。一般我们会使用log来将相乘变为相加。</strong>如果使用对数（log）进行处理，则依旧是求<span class="math inline">\(argmax\)</span>；如果使用负对数（-log）进行处理，则改为求<span class="math inline">\(argmin\)</span>。Neubig的Slides中取了负对数，因此我们实验中也取负对数。</p></li>
 </ul>
 <h2 id="hmm-训练">4 HMM 训练</h2>
