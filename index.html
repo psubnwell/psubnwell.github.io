@@ -346,7 +346,7 @@ P(x, y) &amp;= P(x_1, x_2, ..., x_n, y_1, y_2, ..., y_n) \\
 </ul></li>
 <li><p>大部分情况下我们是已知<span class="math inline">\(x\)</span>，只需求<strong>最有可能</strong>的<span class="math inline">\(y\)</span>，而无需求<strong>所有可能</strong>的<span class="math inline">\(y\)</span>的分布。即：<span class="math display">\[y=argmax_y P(y|x) = argmax_y \frac{P(x|y)P(y)}{P(x)}\]</span> 因为分母和所求参数<span class="math inline">\(y\)</span>无关，因此可以不用求<span class="math inline">\(P(x)\)</span>，省去大量计算。即： <span class="math display">\[y=argmax_y P(y|x) = argmax_y P(x|y)P(y)\]</span> （注：这种方法有个术语。在贝叶斯学派的观念中，参数和变量没有区别，所以可以将变量<span class="math inline">\(y\)</span>视为参数来做估计。这里描述的这种不求完整分布，只需要求能达到最大概率的参数值的方法，在参数估计中叫做<strong>最大后验概率估计（Maximum A Posteriori，MAP）</strong>。）</p></li>
 </ul>
-<h2 id="hmm-基础">2 HMM 基础</h2>
+<h2 id="hmm-基础">HMM 基础</h2>
 <ul>
 <li><p>HMM将公式<span class="math inline">\(y=argmax_y P(y|x) = argmax_y P(x|y)P(y)\)</span>进一步拆解。</p>
 <div class="figure">

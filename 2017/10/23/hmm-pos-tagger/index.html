@@ -111,7 +111,7 @@
 <meta property="og:image" content="http://yoursite.com/2017/10/23/hmm-pos-tagger/forward_first.png">
 <meta property="og:image" content="http://yoursite.com/2017/10/23/hmm-pos-tagger/forward_middle.png">
 <meta property="og:image" content="http://yoursite.com/2017/10/23/hmm-pos-tagger/forward_final.png">
-<meta property="og:updated_time" content="2017-10-23T08:48:33.089Z">
+<meta property="og:updated_time" content="2017-10-23T08:50:37.285Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于HMM模型的词性标注器Python实现">
 <meta name="twitter:description" content="说明  本文代码对应Graham Neubig的nlptutorial系列中的第四讲Part of Speech Tagging with Hidden Markov Models，主要讲解用隐马尔科夫模型（Hidden Markov Model，HMM）实现一个词性标注器。 对应Slides位于此处。 本文的示例代码位于此处。 依赖  Python3 numpy  建议在阅读代码（5 HMM 训">
@@ -356,7 +356,7 @@ P(x, y) &amp;= P(x_1, x_2, ..., x_n, y_1, y_2, ..., y_n) \\
 </ul></li>
 <li><p>大部分情况下我们是已知<span class="math inline">\(x\)</span>，只需求<strong>最有可能</strong>的<span class="math inline">\(y\)</span>，而无需求<strong>所有可能</strong>的<span class="math inline">\(y\)</span>的分布。即：<span class="math display">\[y=argmax_y P(y|x) = argmax_y \frac{P(x|y)P(y)}{P(x)}\]</span> 因为分母和所求参数<span class="math inline">\(y\)</span>无关，因此可以不用求<span class="math inline">\(P(x)\)</span>，省去大量计算。即： <span class="math display">\[y=argmax_y P(y|x) = argmax_y P(x|y)P(y)\]</span> （注：这种方法有个术语。在贝叶斯学派的观念中，参数和变量没有区别，所以可以将变量<span class="math inline">\(y\)</span>视为参数来做估计。这里描述的这种不求完整分布，只需要求能达到最大概率的参数值的方法，在参数估计中叫做<strong>最大后验概率估计（Maximum A Posteriori，MAP）</strong>。）</p></li>
 </ul>
-<h2 id="hmm-基础">2 HMM 基础</h2>
+<h2 id="hmm-基础">HMM 基础</h2>
 <ul>
 <li><p>HMM将公式<span class="math inline">\(y=argmax_y P(y|x) = argmax_y P(x|y)P(y)\)</span>进一步拆解。</p>
 <div class="figure">
@@ -663,7 +663,7 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#说明"><span class="nav-number">1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成式模型基础"><span class="nav-number">2.</span> <span class="nav-text">生成式模型基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hmm-基础"><span class="nav-number">3.</span> <span class="nav-text">2 HMM 基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hmm-真实例子"><span class="nav-number">4.</span> <span class="nav-text">HMM 真实例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hmm-训练"><span class="nav-number">5.</span> <span class="nav-text">HMM 训练</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hmm-随机采样"><span class="nav-number">6.</span> <span class="nav-text">HMM 随机采样</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态规划思想"><span class="nav-number">7.</span> <span class="nav-text">动态规划思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hmm-测试维特比算法"><span class="nav-number">8.</span> <span class="nav-text">HMM 测试（维特比算法）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">9.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#说明"><span class="nav-number">1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成式模型基础"><span class="nav-number">2.</span> <span class="nav-text">生成式模型基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hmm-基础"><span class="nav-number">3.</span> <span class="nav-text">HMM 基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hmm-真实例子"><span class="nav-number">4.</span> <span class="nav-text">HMM 真实例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hmm-训练"><span class="nav-number">5.</span> <span class="nav-text">HMM 训练</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hmm-随机采样"><span class="nav-number">6.</span> <span class="nav-text">HMM 随机采样</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态规划思想"><span class="nav-number">7.</span> <span class="nav-text">动态规划思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hmm-测试维特比算法"><span class="nav-number">8.</span> <span class="nav-text">HMM 测试（维特比算法）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">9.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
