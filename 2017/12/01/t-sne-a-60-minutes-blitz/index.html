@@ -79,7 +79,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="t-SNE,降维,流形学习,PCA,Manifold,主成分分析," />
+  <meta name="keywords" content="t-SNE,Manifold,降维,流形学习," />
 
 
 
@@ -95,13 +95,13 @@
 
 
 
-<meta name="description" content="说明  本文是用作2017-12-03晚MI&amp;amp;T学术晚餐会的试讲大纲。 由于晚餐会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：论文笔记：Visualizing data using t-SNE  基础篇 认识高维空间：维数灾难  维数灾难（curse of dimensionality）描述的是高维空间中若干迥异于低维空间、">
-<meta name="keywords" content="t-SNE,降维,流形学习,PCA,Manifold,主成分分析">
+<meta name="description" content="说明  本文是用作2017-12-03晚晚茶会的试讲大纲。 由于晚餐会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：论文笔记：Visualizing data using t-SNE  基础篇 认识高维空间：维数灾难  维数灾难（curse of dimensionality）描述的是高维空间中若干迥异于低维空间、甚至反直觉的现象。该">
+<meta name="keywords" content="t-SNE,Manifold,降维,流形学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="t-SNE简介：A 60 Minute Blitz">
 <meta property="og:url" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/index.html">
 <meta property="og:site_name" content="胡东瑶的小屋">
-<meta property="og:description" content="说明  本文是用作2017-12-03晚MI&amp;amp;T学术晚餐会的试讲大纲。 由于晚餐会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：论文笔记：Visualizing data using t-SNE  基础篇 认识高维空间：维数灾难  维数灾难（curse of dimensionality）描述的是高维空间中若干迥异于低维空间、">
+<meta property="og:description" content="说明  本文是用作2017-12-03晚晚茶会的试讲大纲。 由于晚餐会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：论文笔记：Visualizing data using t-SNE  基础篇 认识高维空间：维数灾难  维数灾难（curse of dimensionality）描述的是高维空间中若干迥异于低维空间、甚至反直觉的现象。该">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/high_dim_sparse_data.png">
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/high_dim_marginal_data.png">
@@ -115,10 +115,10 @@
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/perp_4.png">
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/perp_5.png">
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/perp_6.png">
-<meta property="og:updated_time" content="2017-12-02T06:53:36.513Z">
+<meta property="og:updated_time" content="2017-12-02T13:46:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="t-SNE简介：A 60 Minute Blitz">
-<meta name="twitter:description" content="说明  本文是用作2017-12-03晚MI&amp;amp;T学术晚餐会的试讲大纲。 由于晚餐会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：论文笔记：Visualizing data using t-SNE  基础篇 认识高维空间：维数灾难  维数灾难（curse of dimensionality）描述的是高维空间中若干迥异于低维空间、">
+<meta name="twitter:description" content="说明  本文是用作2017-12-03晚晚茶会的试讲大纲。 由于晚餐会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：论文笔记：Visualizing data using t-SNE  基础篇 认识高维空间：维数灾难  维数灾难（curse of dimensionality）描述的是高维空间中若干迥异于低维空间、甚至反直觉的现象。该">
 <meta name="twitter:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/high_dim_sparse_data.png">
 
 
@@ -342,7 +342,7 @@
       
         <h2 id="说明">说明</h2>
 <ul>
-<li>本文是用作2017-12-03晚MI&amp;T学术晚餐会的试讲大纲。</li>
+<li>本文是用作2017-12-03晚晚茶会的试讲大纲。</li>
 <li>由于晚餐会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：<a href="https://psubnwell.github.io/2017/12/01/paper-note-t-sne/" target="_blank" rel="external">论文笔记：Visualizing data using t-SNE</a></li>
 </ul>
 <h2 id="基础篇">基础篇</h2>
@@ -359,12 +359,18 @@
 <div class="figure">
 <img src="/2017/12/01/t-sne-a-60-minutes-blitz/high_dim_marginal_data.png">
 
-</div></li>
-<li><p><strong>欧氏距离失效</strong>（因此任何基于欧氏距离的算法也失效）。这是由上一特点自然推导出的结论。</p>
+</div>
+<p>几何学能给出高维空间中超几何体的体积，单位超立方体的体积<span class="math inline">\(V_{hypercube} = 1^d = 1\)</span>，而其内切超球体的体积公式如下：</p>
+<p><span class="math display">\[V_{hypersphere} = \frac{\pi^{\frac{n}{2}}}{\Gamma(\frac{n}{2} + 1)}\cdot 0.5^d\]</span></p>
+<p>对两者商做极限<span class="math inline">\(\lim_{d \to +\infty}\frac{V_{hypersphere}}{V_{hypercube}}=0\)</span>，因此可以说一个高维单元空间只有边角，而没有中心。数据也只能处于边缘上，而远离中心。这样就直接导致了下一个性质：</p></li>
+<li><p><strong>欧氏距离失效（因此任何基于欧氏距离的算法也失效）</strong>。</p>
 <div class="figure">
 <img src="/2017/12/01/t-sne-a-60-minutes-blitz/curse_of_dimensionality.png">
 
-</div></li>
+</div>
+<p>上图描述的是高维空间中大距离和小距离的差异越来越不明显。</p>
+<p><span class="math display">\[\lim_{d\to +\infty}\frac{dist_{max} - dist_{min}}{d_{min}}=0\]</span></p>
+<p>这是由上一性质自然推导出的结论。</p></li>
 </ul></li>
 </ul>
 <h3 id="降维">降维</h3>
@@ -382,7 +388,7 @@
 <li>低维空间（low-dimensional space），又叫<strong>嵌入空间（embedded space）</strong>、<strong>低维映射（low-dimensional map</strong>，map在此做名词用）等</li>
 <li>低维数据（low-dimensional data），又叫<strong>低维嵌入（low-dimensional embeddings）</strong>、<strong>低维表示（low-dimensional representations）</strong>、<strong>映射点（map points）</strong>等</li>
 </ul></li>
-<li>【题外话】NLP目前所使用的词嵌入（word embedding）一词的本意可能就是这个意思。最初所使用的词向量是one-hot向量，维度等于词表大小（约几十万）。后来采用分布式表示的词向量，维度一般取几百维。因此我们认为分布式表示的词向量是更高维度语义空间的低维嵌入（embedding）。</li>
+<li>【题外话】NLP目前所使用的<strong>词嵌入（word embedding）</strong>一词的本意可能就是这个意思。最初所使用的词向量是one-hot向量，维度等于词表大小（约几十万）。后来采用分布式表示的词向量，维度一般取几百维。因此我们认为分布式表示的词向量是更高维度语义空间的<strong>低维嵌入（embedding）</strong>。</li>
 <li>降维技术可以分为线性和非线性两大类：
 <ul>
 <li><strong>线性</strong>降维技术。侧重让<strong>不相似的点</strong>在低维表示中<strong>分开</strong>。
@@ -409,7 +415,7 @@
 <li><strong><a href="https://zh.wikipedia.org/wiki/%E5%B5%8C%E5%85%A5_(%E6%95%B0%E5%AD%A6)" target="_blank" rel="external">嵌入（embedding）</a></strong>：数学上，<strong>嵌入</strong>是指一个数学结构经映射<strong>包含在</strong>另一个结构中。</li>
 <li><strong>流形（manifold）</strong>：
 <ul>
-<li><strong>机器学习</strong>中指的流形指<strong>本征维度较低</strong>但<strong>嵌入在高维空间</strong>中的物体（a manifold has <strong>low intrinsic dimensions</strong>, and is <strong>embedded</strong> within a space of much higher dimensionality<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>）。比如上图中的S-curve数据集，本征维度=2（摊开来是一个平面），但被嵌在三维空间中。</li>
+<li><strong>机器学习</strong>中指的流形指<strong>本征维度较低</strong>但<strong>嵌入在高维空间</strong>中的<strong>空间</strong>（a manifold has <strong>low intrinsic dimensions</strong>, and is <strong>embedded</strong> within a space of much higher dimensionality<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>）。比如上图中的S-curve数据集，本征维度=2（摊开来是一个二维空间），但被嵌在三维空间中。</li>
 <li><strong>数学</strong>中提到流形，强调其具有<strong>局部欧式空间</strong>的性质，可以在局部应用欧几里得距离。但是在机器学习（流形学习）中，这个假设基本不成立。原因是高维空间由于维数灾难的存在，没有足够稠密的数据能在足够小的局部去近似该流形<a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a>。</li>
 <li>但是流形概念中<strong>局部</strong>的思想仍可以借鉴。它为降维提供了另一个视角：<strong>从微观角度去探索高维数据结构。</strong></li>
 </ul></li>
@@ -423,8 +429,8 @@
 <ul>
 <li>神经网络大部分是有监督学习；流形学习大部分是无监督学习。</li>
 <li>神经网络拟合一个分类函数；流形学习（以t-SNE为例）拟合高维数据的分布。</li>
-<li>神经网络学习参数；流形学习直接学习低维数据的表达（即直接学习输出的结果）。</li>
-<li>两者均有损失函数、梯度下降等学习算法的特点。</li>
+<li>神经网络学习参数；流形学习（以t-SNE为例）直接学习低维数据的表达。</li>
+<li>两者均有损失函数、梯度下降、迭代轮数等学习算法的特点。</li>
 </ul></li>
 </ul>
 <h2 id="学术篇">学术篇</h2>
@@ -563,7 +569,7 @@
 <p>很快，<strong>它遇到了另一道沟槽</strong>，它很留恋沟槽那粗糙的凹面，在上面爬行感觉很好，同时槽面的颜色也让它想起了蚁后周围的蚁卵。它不惜向下走回头路，沿着槽爬了一趟。这道槽的形状要复杂些，很弯曲，转了一个完整的圈后再向下延伸一段，让它想起在对气味信息的搜寻后终于找到了回家的路的过程，<strong>它在自己的神经网络中建立起了它的形状：“9”。</strong>…</p>
 <p>褐蚁继续沿着与地面平行的方向爬，<strong>进入了第三道沟槽</strong>，<strong>它是一个近似于直角的转弯，是这样的：“7”。</strong>它不喜欢这形状，平时，这种不平滑的、突然的转向，往往意味着危险和战斗。…</p>
 <p>孤峰上的褐蚁本来想转向向上攀登，<strong>但发现前面还有一道凹槽，同在“7”之前爬过的那个它喜欢的形状“9”一模一样，它就再横行过去，爬了一遍这个“9”。它觉得这个形状比“7”和“1”好，好在哪里当然说不清，这是美感的原始单细胞态；</strong>刚才爬过“9”时的那种模糊的愉悦感再次加强了，这是幸福的原始单细胞态。但这两种精神的单细胞没有进化的机会，现在同一亿年前一样，同一亿年后也一样。</p>
-<p>——《三体》，刘慈欣 著</p>
+<p>——《三体II 黑暗森林》，刘慈欣 著</p>
 </blockquote>
 <h2 id="参考文献">参考文献</h2>
 <div class="footnotes">
@@ -610,15 +616,11 @@
           
             <a href="/tags/t-SNE/" rel="tag"># t-SNE</a>
           
+            <a href="/tags/Manifold/" rel="tag"># Manifold</a>
+          
             <a href="/tags/降维/" rel="tag"># 降维</a>
           
             <a href="/tags/流形学习/" rel="tag"># 流形学习</a>
-          
-            <a href="/tags/PCA/" rel="tag"># PCA</a>
-          
-            <a href="/tags/Manifold/" rel="tag"># Manifold</a>
-          
-            <a href="/tags/主成分分析/" rel="tag"># 主成分分析</a>
           
         </div>
       
@@ -732,7 +734,7 @@
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
