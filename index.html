@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next pisces use-motion" lang="zh-Hans">
+<html class="theme-next mist use-motion" lang="zh-Hans">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -112,7 +112,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Pisces',
+    scheme: 'Mist',
     version: '5.1.2',
     sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -297,6 +297,17 @@
 
           
           
+             <span id="/2017/12/01/paper-note-t-sne/" class="leancloud_visitors" data-flag-title="论文笔记：Visualizing data using t-SNE">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
 
           
 
@@ -319,181 +330,18 @@
       
         
           
-            <h2 id="introduction">Introduction</h2>
-<ul>
-<li>Visualizes high-dimensional data by giving each data point a location in a 2 or 3-dimensional map.</li>
-<li>Most of these techniques simply provide tools to <strong>display</strong> more than two data dimensions, and leave the <strong>interpretation</strong> of the data to the human observer.</li>
-<li>The <strong>aim of dimensionality reduction</strong> is to <strong>preserve as much of the significant structure</strong> of the high-dimensional data as possible in the low-dimensional map.</li>
-<li>传统的<strong>线性技术</strong>主要是想让<strong>不相似的点</strong>在低维表示中<strong>分开</strong>。
-<ul>
-<li>PCA（Principle Components Analysis，主成分分析）</li>
-<li>MDS（Multiple Dimensional Scaling，多维缩放）</li>
-</ul></li>
-<li>对于处于低维、非线性<strong>流形</strong>上的高维数据而言，更重要的是让<strong>相似的近邻点</strong>在低维表示中<strong>靠近</strong>。<strong>非线性技术</strong>主要保持数据的<strong>局部结构</strong>。
-<ul>
-<li>Sammon mapping</li>
-<li>CCA（Curvilinear Components Analysis）</li>
-<li><strong>SNE（Stochastic Neighbor Embedding，随机近邻嵌入）</strong>，<strong>t-SNE是基于SNE的</strong>。</li>
-<li>Isomap（Isometric Mapping，等度量映射）</li>
-<li>MVU（Maximum Variance Unfolding）</li>
-<li>LLE（Locally Linear Embedding，局部线性嵌入）</li>
-<li>Laplacian Eigenmaps</li>
-</ul></li>
-<li>In particular, most of the techniques are <strong>not capable</strong> of retaining <strong>both</strong> the <strong>local</strong> and the <strong>global structure</strong> of the data in a single map.</li>
-<li>In this paper, we introduce
-<ul>
-<li>a way of converting a high-dimensional data set into a <strong>matrix of pairwise similarities</strong> and,</li>
-<li>a new technique, called “<strong>t-SNE</strong>”, for visualizing the resulting similarity data.</li>
-</ul></li>
-</ul>
-<h2 id="sne">SNE</h2>
-<ul>
-<li><p>Stochastic Neighbor Embedding，随机近邻嵌入</p></li>
-<li><p>SNE starts by <strong>converting</strong> the high-dimensional <strong>Euclidean distances</strong> between datapoints into <strong>conditional probabilities</strong> that represent similarities.</p>
-<ul>
-<li>一种基于概率的数据降维处理方法。</li>
-<li>可以提供原始数据，也可以只提供点之间的相似度，两种输入均可。</li>
-</ul></li>
-<li><p>Given a set of <strong>high-dimensional</strong> data points <span class="math inline">\(x_1, x_2, ..., x_n\)</span>, <span class="math inline">\(p_{i|j}\)</span> is the <strong>conditional probability</strong> that <span class="math inline">\(x_i\)</span> would pick <span class="math inline">\(x_j\)</span> as its neighbor if neighbors were picked in proportion to their probability density under a Gaussian <strong>centered at <span class="math inline">\(x_i\)</span></strong>.</p>
-<p><span class="math display">\[p_{j|i} = \frac{exp(-||x_i-x_j||^2/2\sigma_i^2)}{\sum_{k\neq i}exp(-||x_i-x_k||^2/2\sigma_i^2)}\]</span></p>
-<p>注意：1）分母即归一化。2）默认<span class="math inline">\(p_{i|i}=0\)</span>。3）每不同数据点<span class="math inline">\(x_i\)</span>有不同的<span class="math inline">\(\sigma_i\)</span>。其计算方式下面说。</p></li>
-<li><p>Similarly, define <span class="math inline">\(q_{i|j}\)</span> as <strong>conditional probability</strong> corresponding to <strong>low-dimensional</strong> representations of <span class="math inline">\(y_i\)</span> and <span class="math inline">\(y_j\)</span> (corresponding to <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_j\)</span>). The variance of Gaussian in this case is set to be <span class="math inline">\(1/\sqrt{2}\)</span>.</p>
-<p><span class="math display">\[q_{j|i} = \frac{exp(-||y_i-y_j||^2)}{\sum_{k\neq i}exp(-||y_i-y_k||^2)}\]</span></p>
-<p>注意：1）<span class="math inline">\(\sigma_i\)</span> 若取其他值，对结果影响仅仅是缩放而已。</p></li>
-<li><p>If the map points <span class="math inline">\(y_i\)</span> and <span class="math inline">\(y_j\)</span> correctly model the similarity between the high-dimensional data points <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_j\)</span>, the conditional probabilities <span class="math inline">\(p_{j|i}\)</span> and <span class="math inline">\(q_{j|i}\)</span> will be equal.</p></li>
-<li><p>SNE aims to find a low-dimensional data representation that <strong>minimizes the mismatch between <span class="math inline">\(p_{j|i}\)</span> and <span class="math inline">\(q_{j|i}\)</span></strong>. Thus we use the <strong>sum of Kullback-Leibler divergences over all data points</strong> as the <strong>cost function</strong>:</p>
-<p><span class="math display">\[C=\sum_i KL(P_i||Q_i) = \sum_i \sum_j p_{j|i} log\frac{p_{j|i}}{q_{j|i}}\]</span></p>
-<p>in which <span class="math inline">\(P_i(k=j)=p_{j|i}\)</span> represents the conditional probability <strong>distribution</strong> over <strong>all other data points</strong> given data point <span class="math inline">\(x_i\)</span>. <span class="math inline">\(Q_i(k=j)=q_{j|i}\)</span> too.</p>
-<p>注意：KLD是不对称的！因为 <span class="math inline">\(KLD=p log(\frac{p}{q})\)</span>，p&gt;q时为正，p&lt;q时为负。则如果<strong>高维数据相邻</strong>而<strong>低维数据分开</strong>（即p大q小），则<strong>cost很大</strong>；相反，如果<strong>高维数据分开</strong>而<strong>低维数据相邻</strong>（即p小q大），则<strong>cost很小</strong>。所以<strong>SNE倾向于保留高维数据的局部结构</strong>。</p></li>
-<li><p>对<span class="math inline">\(C\)</span>进行梯度下降即可以学习到合适的<span class="math inline">\(y_i\)</span>。</p>
-<p>The gradient:</p>
-<p><span class="math display">\[\frac{\partial C}{\partial y_i} = 2 \sum_j (p_{j|i} - q_{j|i} + p_{i|j} - q_{i|j})(y_i - y_j)\]</span></p>
-<p>and the gradient update with a momentum term:（这里给出但个<span class="math inline">\(y_i\)</span>点的梯度下降公式，显然需要对所有<span class="math inline">\(\mathcal{Y}^{(T)}=\{y_1, y_2, ..., y_n\}\)</span>进行统一迭代。）</p>
-<p><span class="math display">\[y_i^{(t)} = y_i^{(t-1)} + \eta \frac{\partial C}{\partial y_i} + \alpha(t)( y_i^{(t-1)} - y_i^{(t-2)})\]</span></p>
-<p>t-SNE has a cost function that is not convex, i.e. with different initializations we can get different results. 很难优化，也对初值十分敏感，因此要跑多次SNE选取KLD最小/可视化最好结果。（注意这个不是为了泛化，因此选最好的结果即可。）</p></li>
-<li><p>如何为每一个<span class="math inline">\(x_i\)</span>选取对应的<span class="math inline">\(\sigma_i\)</span>？</p>
-<ul>
-<li><p>It is not likely that there is a single value of <span class="math inline">\(\sigma_i\)</span> that is optimal for all data points in the data set because the density of the data is likely to vary. <strong>In dense regions, small <span class="math inline">\(\sigma_i\)</span>, while in sparse region, large <span class="math inline">\(\sigma_i\)</span>.</strong></p></li>
-<li><p>Every <span class="math inline">\(\sigma_i\)</span> is either set by hand （不忍吐槽，原话见于(Hinton and Roweis, 2003)） or found by a simple binary search (Hinton and Roweis, 2003) or by a very robust root-finding method (Vladymyrov and Carreira-Perpinan, 2013)</p></li>
-<li><p>使用算法来确定<span class="math inline">\(\sigma_i\)</span>要求用户预设困惑度（perplexity）。然后算法找到合适的<span class="math inline">\(\sigma_i\)</span>值让条件分布<span class="math inline">\(P_i\)</span>的困惑度等于用户预定义的困惑度即可。</p>
-<p><span class="math display">\[Perp(P_i) = 2^{H(P_i)} = 2^{-\sum_j p_{j|i} log_2 p_{j|i}}\]</span></p>
-<p>注意：困惑度设的大，则显然<span class="math inline">\(\sigma_i\)</span>也大。The perplexity increases <strong>monotonically</strong> with the variance <span class="math inline">\(\sigma_i\)</span>.</p></li>
-<li><p>The perplexity can be interpreted as a smooth measure of <strong>the effective number of neighbors</strong>. The performance of SNE is fairly robust to changes in the perplexity, and <strong>typical values are between 5 and 50.</strong></p></li>
-</ul></li>
-</ul>
-<h2 id="t-sne">t-SNE</h2>
-<ul>
-<li><strong>t-Distributed</strong> Stochastic Neighbor Embedding</li>
-<li>SNE有两个问题：
-<ul>
-<li>Cost function 难以优化 -&gt; 解决方案：使用Symmetric SNE。</li>
-<li>Crowding Problem -&gt; 解决方案：在低维嵌入上使用Student’s t-distribution替代Guassian distribution，同时也简化了cost function。</li>
-</ul></li>
-</ul>
-<h3 id="symmetric-sne">Symmetric SNE</h3>
-<ul>
-<li><p>We define the <strong>joint probabilities</strong> <span class="math inline">\(p_{ij}\)</span> in the high-dimensional space to be the <strong>symmetrized conditional probabilities</strong>, that is, we set</p>
-<p><span class="math display">\[p_{ij} = \frac{p_{j|i} + p_{i|j}}{2n}\]</span></p></li>
-<li><p>minimizing the sum of KLD between conditional probabilities -&gt; minimizing a single KLD between joint probability distribution.</p>
-<p><span class="math display">\[C = KL(P||Q) = \sum_i \sum_j p_{ij} log \frac{p_{ij}}{q_{ij}}\]</span></p></li>
-<li><p>The main advantage of the symmetric version of SNE is the <strong>simpler form of its gradient</strong>, which is faster to compute.</p></li>
-<li><p><span class="math display">\[\frac{\partial C}{\partial y_i} = 4 \sum_j (p_{ij} - q_{ij})(y_i - y_j)\]</span></p>
-<p>(注意：这只是Symmetric SNE的梯度公式，t-SNE的梯度公式类似，推导见后。)</p></li>
-</ul>
-<h3 id="crowding-problem">Crowding Problem</h3>
-<ul>
-<li><p><strong>“crowding problem”</strong>: the area of the two-dimensional map that is available to accommodate <strong>moderately distant datapoints</strong> will not be nearly large enough compared with the area available to accommodate <strong>nearby datapoints</strong>.</p>
-<p>这句话的意思是：在二维映射空间中，能容纳<strong>（高维空间中的）中等距离间隔点</strong>的空间，不会比能容纳<strong>（高维空间中的）相近点</strong>的空间大太多。 换言之，哪怕高维空间中离得较远的点，在低维空间中留不出这么多空间来映射。于是到最后高维空间中远的、近的点，在低维空间中统统被塞在了一起，这就叫做“<strong>拥挤问题（Crowding Problem）</strong>”。</p></li>
-<li><p>Note that <strong>the crowding problem is not specific to SNE</strong>, but that it also occurs in other local techniques for multidimensional scaling such as Sammon mapping.</p></li>
-<li><p>One way around this problem is to use <strong>UNI-SNE</strong> (Cook et al. 2007)</p>
-<p>这种方法直接给低维空间的点给予一个均匀分布（uniform dist），使得对于高维空间中距离较远的点（<span class="math inline">\(p_{ij}\)</span>较小），强制保证在低维空间中<span class="math inline">\(q_{ij}&gt;p_{ij}\)</span> （因为均匀分布的两边比高斯分布的两边高出太多了）。</p></li>
-<li><p>Although <strong>UNI-SNE usually outperforms standard SNE</strong>, the optimization of the UNI-SNE <strong>cost function is tedious</strong>.</p>
-<p>在低维空间中使用均匀分布（UNI-SNE）替代高斯分布（SNE），但cost function优化很复杂，这也是转而使用t分布（t-SNE）取代高斯分布（SNE）的动机。</p></li>
-</ul>
-<h3 id="t-sne-1">t-SNE</h3>
-<ul>
-<li><p>Instead of Gaussian, use a <strong>heavy-tailed distribution (like Student-t distribution)</strong> to convert distances into probability scores in <strong>low dimensions</strong>. This way <strong>moderate</strong> distance in high-dimensional space can be modeled by <strong>larger</strong> distance in low-dimensional space.</p></li>
-<li><p><strong>Student’s t-distribution</strong></p>
-<ul>
-<li><p><a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution" target="_blank" rel="external">Student’s t-distribution</a> has the probability density function given by</p>
-<p><span class="math display">\[f(t) = \frac{\Gamma(\frac{\nu + 1}{2})}{\sqrt{\nu \pi}\Gamma(\frac{\nu}{2})}(1 + \frac{t^2}{\nu})^{-\frac{\nu + 1}{2}}\]</span></p>
-<p>where <span class="math inline">\(\nu\)</span> is the number of degrees of freedom.</p></li>
-<li><p>Special cases <span class="math inline">\(\nu = 1\)</span></p>
-<p><span class="math display">\[f(t) =  \frac{1}{\pi (1+t^2)}\]</span></p>
-<p>Called <strong>Cauchy distribution</strong>. 我们用到是这个简单形式。</p></li>
-<li><p>Special cases <span class="math inline">\(\nu = \infty\)</span></p>
-<p><span class="math display">\[f(t) = \frac{1}{\sqrt{2\pi}} e^{-\frac{t^2}{2}}\]</span></p>
-<p>Called <strong>Guassian/Normal distribution</strong>.</p></li>
-<li><div class="figure">
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Student_t_pdf.svg/325px-Student_t_pdf.svg.png" alt="figure of probability density function">
-<p class="caption">figure of probability density function</p>
-</div></li>
-</ul></li>
-<li><p>Why choose t-dist?</p>
-<ul>
-<li>it is <strong>closely related</strong> to the Gaussian distribution, as the <strong>Student t-distribution is an infinite mixture of Gaussians</strong>.</li>
-<li>A computationally convenient property is that it is <strong>much faster to evaluate</strong> the density of a point under a Student t-distribution than under a Gaussian <strong>because it does not involve an exponential</strong>.</li>
-</ul></li>
-<li><p>Why choose t-dist with single degree of freedom?</p>
-<ul>
-<li><p>Because it has particularly nice property: inverse square law. This makes the map’s representation of joint probabilities (almost) invariant to changes in the scale of the map for map points that are far apart. 意思是：这个平方反比的形式，使得当高维空间的两个点再远，他们在低维空间的联合概率几乎不变。结合上一节提到的UNI-SNE：</p>
-<blockquote>
-<p>给低维空间的点给予一个均匀分布（uniform dist），使得对于高维空间中距离较远的点（<span class="math inline">\(p_{ij}\)</span>较小），强制保证在低维空间中<span class="math inline">\(q_{ij}&gt;p_{ij}\)</span> （因为均匀分布的两边比高斯分布的两边高出太多了）。</p>
-</blockquote>
-<p>从上面的t分布图中可以看到，由于t分布的尾巴高于高斯分布的尾巴，使用t分布同样可以保证对于高维空间中的远距离点，使得在低维空间中<span class="math inline">\(q_{ij}&gt;p_{ij}\)</span>。</p></li>
-</ul></li>
-<li><p>The joint probabilities <span class="math inline">\(q_{ij}\)</span> are defined as</p>
-<p><span class="math display">\[q_{ij} = \frac{(1 + ||y_i - y_j||^2)^{-1}}{\sum_{k\neq l}(1+||y_k - y_l||^2)^{-1}}\]</span></p>
-<p>（注意：和SNE的<span class="math inline">\(q_{j|i}\)</span>公式相比，分母中求和号中，之前是<span class="math inline">\(k\neq i\)</span>，表示仅排除<span class="math inline">\(i\)</span>自身项；现在是<span class="math inline">\(k\neq l\)</span>，表示排除所有自身项 ）</p></li>
-<li><p>The cost function is easy to optimize.</p>
-<p><span class="math display">\[\frac{\partial C}{\partial y_i} = 4 \sum_j (p_{ij} - q_{ij})(y_i - y_j)(1+ ||y_i - y_j||^2)^{-1}\]</span></p>
-<p>（注意：是在Symmetric SNE的梯度公式后面加上了<span class="math inline">\((1+ ||y_i - y_j||^2)^{-1}\)</span>一项，推导见论文附录A。）</p></li>
-</ul>
-<h2 id="complexity">Complexity</h2>
-<ul>
-<li><strong>Space and time complexity is quadratic (<span class="math inline">\(O(n^2)\)</span>)</strong> in the number of datapoints so infeasible to apply on large datasets.</li>
-<li>Random walk
-<ul>
-<li>Select a random subset of points (called landmark points) to display.</li>
-<li>for each landmark point, define a random walk starting at a landmark point and terminating at any other landmark point.</li>
-<li><span class="math inline">\(p_{i|j}\)</span> is defined as fraction of random walks starting at <span class="math inline">\(x_i\)</span> and finishing at <span class="math inline">\(x_j\)</span> (both these points are landmark points). This way, <span class="math inline">\(p_{i|j}\)</span> is not sensitive to “short-circuits” in the graph (due to noisy data points).</li>
-</ul></li>
-<li><strong>Barnes-Hut approximations</strong> (Van Der Maaten, 2014)
-<ul>
-<li>allowing it to be applied on large real-world datasets. We applied it on data sets with up to 30 million examples.</li>
-</ul></li>
-</ul>
-<h2 id="advantages-of-t-sne">Advantages of t-SNE</h2>
-<ul>
-<li>Gaussian kernel employed by t-SNE (in high-dimensional) defines a soft border between the local and global structure of the data.</li>
-<li>Both nearby and distant pair of datapoints get equal importance in modeling the low-dimensional coordinates.</li>
-<li>The local neighborhood size of each datapoint is determined on the basis of the local density of the data.</li>
-<li>Random walk version of t-SNE takes care of “short-circuit” problem.</li>
-</ul>
-<h2 id="limitations-of-t-sne">Limitations of t-SNE</h2>
-<ul>
-<li>it is unclear how t-SNE performs on general dimensionality reduction tasks,</li>
-<li>the relatively local nature of t-SNE makes it sensitive to the curse of the intrinsic dimensionality of the data, and</li>
-<li>t-SNE is not guaranteed to converge to a global optimum of its cost function.</li>
-</ul>
-<h2 id="彩蛋">彩蛋</h2>
-<ul>
-<li><p>关于SNE的梯度公式</p>
-<p><span class="math display">\[\frac{\partial C}{\partial y_i} = 2 \sum_j (p_{j|i} - q_{j|i} + p_{i|j} - q_{i|j})(y_i - y_j)\]</span></p>
-<p>作者在论文第4页用了一个弹簧的比喻来解释，如图：</p>
-<div class="figure">
-<img src="/2017/12/01/paper-note-t-sne/spring.png" alt="spring">
-<p class="caption">spring</p>
-</div>
-<p>可以把该公式看做是所有<span class="math inline">\(y_j\)</span>通过弹簧（图中箭头）对<span class="math inline">\(y_i\)</span>的合力，类比胡克定律<span class="math inline">\(F=k\Delta x\)</span>，这里<span class="math inline">\((y_i - y_j)\)</span>表示拉伸长度，而<span class="math inline">\((p_{j|i} - q_{j|i} + p_{i|j} - q_{i|j})\)</span>表示弹性系数。表示<strong>高维数据点和低维映射点之间点相似度的失配程度（mismatch between the pairwise similarities of the data points and the map points）</strong>。按这么来说，弹性系数应该写成<span class="math inline">\((\frac{p_{j|i} + p_{i|j}}{2} - \frac{q_{j|i} + q_{i|j}}{2})\)</span>的形式，有趣的是，如果写成这种形式，则SNE、Symmetric SNE、t-SNE的梯度公式形式上就统一了。</p>
-<ul>
-<li>SNE: <span class="math display">\[\frac{\partial C}{\partial y_i} = 4 \sum_j (\frac{p_{j|i} + p_{i|j}}{2} - \frac{q_{j|i} + q_{i|j}}{2})(y_i - y_j)\]</span></li>
-<li>Symmetric SNE: <span class="math display">\[\frac{\partial C}{\partial y_i} = 4 \sum_j (p_{ij} - q_{ij})(y_i - y_j)\]</span></li>
-<li>t-SNE: <span class="math display">\[\frac{\partial C}{\partial y_i} = 4 \sum_j (p_{ij} - q_{ij})(y_i - y_j)(1+ ||y_i - y_j||^2)^{-1}\]</span></li>
-</ul></li>
-</ul>
+          Introduction
 
-          
+Visualizes high-dimensional data by giving each data point a location in a 2 or 3-dimensional map.
+Most of these techniques simply provi
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/12/01/paper-note-t-sne/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -589,6 +437,17 @@
 
           
           
+             <span id="/2017/12/01/t-sne-a-60-minutes-blitz/" class="leancloud_visitors" data-flag-title="t-SNE简介：A 60 Minute Blitz">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
 
           
 
@@ -611,259 +470,21 @@
       
         
           
-            <h2 id="说明">说明</h2>
-<ul>
-<li>本文是用作2017-12-03晚MI&amp;T学术晚餐会的试讲大纲。</li>
-<li>由于晚餐会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：<a href="https://psubnwell.github.io/2017/12/01/paper-note-t-sne/" target="_blank" rel="external">论文笔记：Visualizing data using t-SNE</a></li>
-</ul>
-<h2 id="基础篇">基础篇</h2>
-<h3 id="认识高维空间维数灾难">认识高维空间：维数灾难</h3>
-<ul>
-<li><p><strong>维数灾难（curse of dimensionality）</strong>描述的是高维空间中<strong>若干迥异于低维空间、甚至反直觉</strong>的现象。该现象的详细论述可以参考文献<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>，其中通过超立方体和其内切球的推导十分精彩，这里不再赘述。</p>
-<ul>
-<li><p><strong>高维空间中数据样本极其稀疏。</strong>需要维度几何级数的数据才能满足在高维空间密采样（dense sample）。反过来，高维数据降维到低维空间也将发生“<strong>拥挤问题（Crowding Problem）</strong><a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>”</p>
-<div class="figure">
-<img src="/2017/12/01/t-sne-a-60-minutes-blitz/high_dim_sparse_data.png">
+          说明
 
-</div></li>
-<li><p><strong>高维单位空间中数据几乎全部位于超立方体的边缘。</strong></p>
-<div class="figure">
-<img src="/2017/12/01/t-sne-a-60-minutes-blitz/high_dim_marginal_data.png">
+本文是用作2017-12-03晚MI&amp;T学术晚餐会的试讲大纲。
+由于晚餐会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：论文笔记：Visualizing data using t-SNE
 
-</div></li>
-<li><p><strong>欧氏距离失效</strong>（因此任何基于欧氏距离的算法也失效）。这是由上一特点自然推导出的结论。</p>
-<div class="figure">
-<img src="/2017/12/01/t-sne-a-60-minutes-blitz/curse_of_dimensionality.png">
-
-</div></li>
-</ul></li>
-</ul>
-<h3 id="降维">降维</h3>
-<ul>
-<li><strong>降维（dimension reduction）</strong>的基本作用：
-<ul>
-<li>缓解维数灾难。即提高样本密度，以及使基于欧氏距离的算法重新生效。</li>
-<li>数据预处理。对数据去冗余、降低信噪比。</li>
-<li>方便可视化。</li>
-</ul></li>
-<li>降维的概念中有两对直觉性的概念会反复出现：高维/低维空间、高维/低维数据。在文献中他们有若干别称<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>：
-<ul>
-<li>高维空间（high-dimensional space），又叫原空间（original space）</li>
-<li>高维数据（low-dimensional data），也直接叫<strong>数据点（data points）</strong>，用于和下述的<strong>映射点</strong>对应。</li>
-<li>低维空间（low-dimensional space），又叫<strong>嵌入空间（embedded space）</strong>、<strong>低维映射（low-dimensional map</strong>，map在此做名词用）等</li>
-<li>低维数据（low-dimensional data），又叫<strong>低维嵌入（low-dimensional embeddings）</strong>、<strong>低维表示（low-dimensional representations）</strong>、<strong>映射点（map points）</strong>等</li>
-</ul></li>
-<li>【题外话】NLP目前所使用的词嵌入（word embedding）一词的本意可能就是这个意思。最初所使用的词向量是one-hot向量，维度等于词表大小（约几十万）。后来采用分布式表示的词向量，维度一般取几百维。因此我们认为分布式表示的词向量是更高维度语义空间的低维嵌入（embedding）。</li>
-<li>降维技术可以分为线性和非线性两大类：
-<ul>
-<li><strong>线性</strong>降维技术。侧重让<strong>不相似的点</strong>在低维表示中<strong>分开</strong>。
-<ul>
-<li>PCA（Principle Components Analysis，主成分分析）</li>
-<li>MDS（Multiple Dimensional Scaling，多维缩放）等</li>
-</ul></li>
-<li><strong>非线性</strong>降维技术（<strong>广义上“非线性降维技术”≈“流形学习”</strong>，狭义上后者是前者子集）。这类技术假设高维数据实际上处于一个比所处空间维度低的非线性流形上，因此侧重让<strong>相似的近邻点</strong>在低维表示中<strong>靠近</strong>。
-<ul>
-<li>Sammon mapping</li>
-<li><strong>SNE（Stochastic Neighbor Embedding，随机近邻嵌入）</strong>，<strong>t-SNE是基于SNE的</strong>。</li>
-<li>Isomap（Isometric Mapping，等度量映射）</li>
-<li>MVU（Maximum Variance Unfolding）</li>
-<li>LLE（Locally Linear Embedding，局部线性嵌入）等</li>
-</ul></li>
-</ul></li>
-</ul>
-<h3 id="流形学习">流形学习</h3>
-<div class="figure">
-<img src="/2017/12/01/t-sne-a-60-minutes-blitz/manifold_geodesic.png">
-
-</div>
-<ul>
-<li><strong><a href="https://zh.wikipedia.org/wiki/%E5%B5%8C%E5%85%A5_(%E6%95%B0%E5%AD%A6)" target="_blank" rel="external">嵌入（embedding）</a></strong>：数学上，<strong>嵌入</strong>是指一个数学结构经映射<strong>包含在</strong>另一个结构中。</li>
-<li><strong>流形（manifold）</strong>：
-<ul>
-<li><strong>机器学习</strong>中指的流形指<strong>本征维度较低</strong>但<strong>嵌入在高维空间</strong>中的物体（a manifold has <strong>low intrinsic dimensions</strong>, and is <strong>embedded</strong> within a space of much higher dimensionality<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>）。比如上图中的S-curve数据集，本征维度=2（摊开来是一个平面），但被嵌在三维空间中。</li>
-<li><strong>数学</strong>中提到流形，强调其具有<strong>局部欧式空间</strong>的性质，可以在局部应用欧几里得距离。但是在机器学习（流形学习）中，这个假设基本不成立。原因是高维空间由于维数灾难的存在，没有足够稠密的数据能在足够小的局部去近似该流形<a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a>。</li>
-<li>但是流形概念中<strong>局部</strong>的思想仍可以借鉴。它为降维提供了另一个视角：<strong>从微观角度去探索高维数据结构。</strong></li>
-</ul></li>
-<li>距离<a href="#fn6" class="footnoteRef" id="fnref6"><sup>6</sup></a>：想象你是一只蚂蚁，在图中的二维曲面流形上行走。
-<ul>
-<li>高维直线距离：左图黑线。这个距离没有意义！</li>
-<li>测地线距离：左图红线，右图红虚线。这个距离才有意义！</li>
-<li>近邻距离：右图黑折线。用近邻距离可以拟合测地线距离。</li>
-</ul></li>
-<li>学习：流形学习之所以叫学习，因为它不像PCA一类的纯线性代数降维方法，而是更像一个类似神经网络的学习算法。
-<ul>
-<li>神经网络大部分是有监督学习；流形学习大部分是无监督学习。</li>
-<li>神经网络拟合一个分类函数；流形学习（以t-SNE为例）拟合高维数据的分布。</li>
-<li>神经网络学习参数；流形学习直接学习低维数据的表达（即直接学习输出的结果）。</li>
-<li>两者均有损失函数、梯度下降等学习算法的特点。</li>
-</ul></li>
-</ul>
-<h2 id="学术篇">学术篇</h2>
-<h3 id="sne">SNE</h3>
-<ul>
-<li><p>SNE（Stochastic Neighbor Embedding，随机近邻嵌入）<a href="#fn7" class="footnoteRef" id="fnref7"><sup>7</sup></a></p></li>
-<li><p>SNE两个主要思路/步骤：</p>
-<ul>
-<li>将<strong>欧氏距离</strong>转化为<strong>条件概率</strong>来表征<strong>点间相似度（pairwise similarity）</strong>。</li>
-<li>使用<strong>梯度下降</strong>算法来使低维分布学习/<strong>拟合</strong>高维分布。</li>
-</ul></li>
-<li><p>给定高维空间的数据点<span class="math inline">\(x_1, x_2, ..., x_n\)</span>，<span class="math inline">\(p_{i|j}\)</span>是<span class="math inline">\(x_i\)</span>以自己为中心，以高斯分布选择<span class="math inline">\(x_j\)</span>作为近邻点的条件概率。</p>
-<p><span class="math display">\[p_{j|i} = \frac{exp(-||x_i-x_j||^2/2\sigma_i^2)}{\sum_{k\neq i}exp(-||x_i-x_k||^2/2\sigma_i^2)}\]</span></p>
-<p>注意：1）对除i外其他所有j都计算一个条件概率后，形成一个概率分布列，所以分母需要归一化。2）默认<span class="math inline">\(p_{i|i}=0\)</span>。3）每不同数据点<span class="math inline">\(x_i\)</span>有不同的<span class="math inline">\(\sigma_i\)</span>，在此不展开。</p></li>
-<li><p>同理，有低维空间的映射点<span class="math inline">\(y_1, y_2, …, y_n\)</span>（分别对应<span class="math inline">\(x_1, x_2, ..., x_n\)</span>），<span class="math inline">\(q_{j|i}\)</span>是<span class="math inline">\(y_i\)</span>以自己为中心，以高斯分布选择<span class="math inline">\(y_j\)</span>作为近邻点的条件概率。</p>
-<p><span class="math display">\[q_{j|i} = \frac{exp(-||y_i-y_j||^2)}{\sum_{k\neq i}exp(-||y_i-y_k||^2)}\]</span></p>
-<p>注意：若方差取其他值，对结果影响仅仅是缩放而已。</p></li>
-<li><p>SNE的目标是让低维分布去拟合高维分布，则目标是令两个分布一致。<strong>两个分布的一致程度</strong>可以使用<strong>相对熵（Mutual entropy，也叫做KL散度，Kullback-Leibler divergences，KLD）</strong>来衡量，可以以此定义<strong>代价函数（cost function）</strong>：</p>
-<p><span class="math display">\[C=\sum_i KL(P_i||Q_i) = \sum_i \sum_j p_{j|i} log\frac{p_{j|i}}{q_{j|i}}\]</span></p>
-<p>其中 <span class="math inline">\(P_i(k=j)=p_{j|i}\)</span> 和 <span class="math inline">\(Q_i(k=j)=q_{j|i}\)</span> 是两个分布列。</p>
-<p>注意：KLD是不对称的！因为 <span class="math inline">\(KLD=p log(\frac{p}{q})\)</span>，p&gt;q时为正，p&lt;q时为负。则如果<strong>高维数据相邻</strong>而<strong>低维数据分开</strong>（即p大q小），则<strong>cost很大</strong>；相反，如果<strong>高维数据分开</strong>而<strong>低维数据相邻</strong>（即p小q大），则<strong>cost很小</strong>。所以<strong>SNE倾向于保留高维数据的局部结构</strong>。</p></li>
-<li><p>对<span class="math inline">\(C\)</span>进行梯度下降即可以学习到合适的<span class="math inline">\(y_i\)</span>。</p>
-<p>梯度公式：</p>
-<p><span class="math display">\[\frac{\partial C}{\partial y_i} = 2 \sum_j (p_{j|i} - q_{j|i} + p_{i|j} - q_{i|j})(y_i - y_j)\]</span></p>
-<p>带动量的梯度更新公式：（这里给出单个<span class="math inline">\(y_i\)</span>点的梯度下降公式，显然需要对所有<span class="math inline">\(\mathcal{Y}^{(T)}=\{y_1, y_2, ..., y_n\}\)</span>进行统一迭代。）</p>
-<p><span class="math display">\[y_i^{(t)} = y_i^{(t-1)} + \eta \frac{\partial C}{\partial y_i} + \alpha(t)( y_i^{(t-1)} - y_i^{(t-2)})\]</span></p></li>
-</ul>
-<h3 id="t-sne">t-SNE</h3>
-<ul>
-<li><p><strong>t-Distributed</strong> Stochastic Neighbor Embedding<a href="#fn8" class="footnoteRef" id="fnref8"><sup>8</sup></a></p></li>
-<li><p>事实上SNE并没有解决维度灾难带来的若干问题：</p>
-<ul>
-<li><strong>拥挤问题（Crowding Problem）</strong>：在二维映射空间中，能容纳<strong>（高维空间中的）中等距离间隔点</strong>的空间，不会比能容纳<strong>（高维空间中的）相近点</strong>的空间大太多。<a href="#fn9" class="footnoteRef" id="fnref9"><sup>9</sup></a></li>
-<li>换言之，哪怕高维空间中离得较远的点，在低维空间中留不出这么多空间来映射。于是到最后高维空间中的点，尤其是远距离和中等距离的点，在低维空间中统统被塞在了一起，这就叫做“<strong>拥挤问题（Crowding Problem）</strong>”。</li>
-</ul></li>
-<li><p>如何解决？高维空间保持高斯分布不变，将低维空间的分布做调整，使得两边尾巴比高维空间的高斯分布更高，即可缓解拥挤问题。想一想为什么？</p>
-<ul>
-<li><strong>UNI-SNE</strong><a href="#fn10" class="footnoteRef" id="fnref10"><sup>10</sup></a>：给低维空间的点给予一个<strong>均匀分布（uniform dist）</strong>，使得<strong>对于高维空间中距离较远的点（<span class="math inline">\(p_{ij}\)</span>较小），强制保证在低维空间中<span class="math inline">\(q_{ij}&gt;p_{ij}\)</span></strong> （因为均匀分布的两边比高斯分布的两边高出太多了）。</li>
-</ul></li>
-<li><p><strong>t-分布（<a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution" target="_blank" rel="external">Student’s t-distribution</a>）</strong></p>
-<ul>
-<li><p>t-分布的概率密度函数（probability density function，PDF）形式为：</p>
-<p><span class="math display">\[f(t) = \frac{\Gamma(\frac{\nu + 1}{2})}{\sqrt{\nu \pi}\Gamma(\frac{\nu}{2})}(1 + \frac{t^2}{\nu})^{-\frac{\nu + 1}{2}}\]</span></p>
-<p>其中 <span class="math inline">\(\nu\)</span> 是自由度。</p>
-<div class="figure">
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Student_t_pdf.svg/325px-Student_t_pdf.svg.png" alt="figure of probability density function">
-<p class="caption">figure of probability density function</p>
-</div></li>
-<li><p>当 <span class="math inline">\(\nu = 1\)</span></p>
-<p><span class="math display">\[f(t) =  \frac{1}{\pi (1+t^2)}\]</span></p>
-<p>叫做<strong>柯西分布（Cauchy distribution）</strong>，我们用到是这个简单形式。</p></li>
-<li><p>当 <span class="math inline">\(\nu = \infty\)</span></p>
-<p><span class="math display">\[f(t) = \frac{1}{\sqrt{2\pi}} e^{-\frac{t^2}{2}}\]</span></p>
-<p>叫做<strong>高斯/正态分布（Guassian/Normal distribution）</strong>。</p></li>
-</ul></li>
-<li><p>同样，给低维空间的点给予一个<strong>自由度为1的t-分布</strong>，也能使得<strong>对于高维空间中距离较远的点（<span class="math inline">\(p_{ij}\)</span>较小），强制保证在低维空间中<span class="math inline">\(q_{ij}&gt;p_{ij}\)</span></strong> （由图可知，t分布的两边比高斯分布的两边更高）。</p></li>
-<li><p>以上是t-SNE的主要思想，其余还有若干知识点请参考论文<a href="#fn11" class="footnoteRef" id="fnref11"><sup>11</sup></a>或者我的另一篇博文：<a href="https://psubnwell.github.io/2017/12/01/paper-note-t-sne/" target="_blank" rel="external">论文笔记：Visualizing data using t-SNE</a>。</p></li>
-</ul>
-<h2 id="工程篇">工程篇</h2>
-<h3 id="python库sklearn.manifold">Python库：<code>sklearn.manifold</code></h3>
-<ul>
-<li><p>推荐阅读Python下著名的机器学习库scikit-learn的相应文档：<a href="http://scikit-learn.org/stable/modules/manifold.html#t-distributed-stochastic-neighbor-embedding-t-sne" target="_blank" rel="external"><code>sklearn.manifold.TSNE</code> - scikit-learn</a></p></li>
-<li><div class="figure">
-<img src="/2017/12/01/t-sne-a-60-minutes-blitz/sklearn_manifold.png">
-
-</div></li>
-</ul>
-<h3 id="困惑度">困惑度</h3>
-<ul>
-<li><p>使用t-SNE时，除了指定你想要降维的维度（参数<code>n_components</code>），另一个重要的参数是困惑度（Perplexity，参数<code>perplexity</code>）。</p></li>
-<li><p>前面提到高维空间中每一个数据点<span class="math inline">\(x_i\)</span>的高斯分布中的方差<span class="math inline">\(\sigma_i\)</span>都必须设为不同。该方差<span class="math inline">\(\sigma_i\)</span>须具有如下性质：在数据密集的地方要小，数据稀疏的地方要大。</p></li>
-<li><p>如何给每个<span class="math inline">\(x_i\)</span>分配<span class="math inline">\(\sigma_i\)</span>值呢？</p>
-<ul>
-<li>可以手动分配（逃，论文原话。。。<a href="#fn12" class="footnoteRef" id="fnref12"><sup>12</sup></a></li>
-<li>使用算法分配：Binary search<a href="#fn13" class="footnoteRef" id="fnref13"><sup>13</sup></a><a href="#fn14" class="footnoteRef" id="fnref14"><sup>14</sup></a> 或者 Root-finding method<a href="#fn15" class="footnoteRef" id="fnref15"><sup>15</sup></a></li>
-</ul></li>
-<li><p>使用算法来确定<span class="math inline">\(\sigma_i\)</span>则要求用户预设困惑度。然后算法找到合适的<span class="math inline">\(\sigma_i\)</span>值让条件分布<span class="math inline">\(P_i\)</span>的困惑度等于用户预定义的困惑度即可。</p>
-<p><span class="math inline">\(Perp(P_i) = 2^{H(P_i)} = 2^{-\sum_j p_{j|i} log_2 p_{j|i}}\)</span></p>
-<p>注意：困惑度设的大，则显然<span class="math inline">\(\sigma_i\)</span>也大。两者是单调关系，因此可以使用binary search<a href="#fn16" class="footnoteRef" id="fnref16"><sup>16</sup></a>。</p></li>
-<li><p>论文<a href="#fn17" class="footnoteRef" id="fnref17"><sup>17</sup></a>建议<strong>困惑度设为5-50比较好</strong>。这还是一个很大的范围，事实上在这个范围内，<strong>调节困惑度可以展示从微观到宏观的一系列视角</strong>，见下一节。</p></li>
-</ul>
-<h3 id="可视化">可视化</h3>
-<ul>
-<li><p>日常使用t-SNE可调的参数基本只有困惑度，非常简单。针对困惑度如何影响可视化结果，文献<a href="#fn18" class="footnoteRef" id="fnref18"><sup>18</sup></a>做了非常详细的展示，还包含一个在线程序可以辅助认识。</p></li>
-<li><p>文献<a href="#fn19" class="footnoteRef" id="fnref19"><sup>19</sup></a>给出的基本结论如下：</p>
-<ul>
-<li>簇（cluster）的大小无关紧要。</li>
-<li>簇之间的距离无关紧要。</li>
-<li>密集的区域会被扩大，稀疏的区域会被缩小。等</li>
-</ul></li>
-<li><p>根据文献<a href="#fn20" class="footnoteRef" id="fnref20"><sup>20</sup></a>给的图，说一点自己的理解：</p>
-<div class="figure">
-<img src="/2017/12/01/t-sne-a-60-minutes-blitz/perp_1.png">
-
-</div>
-<div class="figure">
-<img src="/2017/12/01/t-sne-a-60-minutes-blitz/perp_2.png">
-
-</div>
-<div class="figure">
-<img src="/2017/12/01/t-sne-a-60-minutes-blitz/perp_3.png">
-
-</div>
-<div class="figure">
-<img src="/2017/12/01/t-sne-a-60-minutes-blitz/perp_4.png">
-
-</div>
-<div class="figure">
-<img src="/2017/12/01/t-sne-a-60-minutes-blitz/perp_5.png">
-
-</div>
-<div class="figure">
-<img src="/2017/12/01/t-sne-a-60-minutes-blitz/perp_6.png">
-
-</div>
-<ul>
-<li>低困惑度对应的是局部视角，要把自己想象成一只蚂蚁，在数据所在的流形上一个点一个点地探索。</li>
-<li>高困惑度对应的是全局视角，要把自己想象成上帝。</li>
-</ul></li>
-</ul>
-<h3 id="t-sne优点">t-SNE优点</h3>
-<ul>
-<li>流形学习中其他方法如Isomap、LLE等，主要用于<strong>展开单个连续的低维流形</strong>（比如“瑞士卷”数据集），而t-SNE主要用于数据的局部结构，并且会倾向于提取出局部的簇，<strong>这种能力对于可视化同时包含多个流形的高维数据（比如MNIST数据集）很有效</strong>。</li>
-</ul>
-<h3 id="t-sne缺点">t-SNE缺点</h3>
-<ul>
-<li>时间、空间复杂度为<span class="math inline">\(O(n^2)\)</span>，计算代价昂贵。百万量级的数据需要几小时，对于PCA可能只需要几分钟。</li>
-<li>升级版Barnes-Hut t-SNE可以让复杂度降为<span class="math inline">\(O(nlogn)\)</span>，但只限于获得二维和三维的嵌入。（sklearn中可以直接使用参数<code>method=’barnes_hut’</code>）</li>
-<li>由于代价函数非凸，多次执行算法的结果是随机的（名字中“Stochatsic”的由来？），需要多次运行选取最好的结果。</li>
-<li>全局结构不能很清楚的保留。这个问题可以通过先用PCA降维到一个合理的维度（如50）后再用t-SNE来缓解，前置的PCA步骤也可以起到去除噪声等功能，。（sklearn中可以直接使用参数<code>init='pca'</code>）</li>
-</ul>
-<h2 id="尾声">尾声</h2>
-<blockquote>
-<p>这次褐蚁来到故地，只是觅食途中偶然路过而已。它来到孤峰脚下，用触须摸了摸这顶天立地的存在，发现孤峰的表面坚硬光滑，但能爬上去，于是它向上爬去。<strong>没有什么且的，只是那小小的简陋神经网络中的一次随机扰动所致。</strong>这扰动随处可见，在地面的每一株小草和草叶上的每一粒露珠中，在天空中的每一片云和云后的每一颗星辰上……<strong>扰动都是无目的的，但巨量的无目的扰动汇集在一起，目的就出现了。</strong>…</p>
-<p>与此同时，在前方的峭壁上，<strong>它遇到了一道长长的沟槽</strong>，与峭壁表面相比，沟槽的凹面粗糙一些，颜色也不同，呈灰白色，它沿着沟槽爬，粗糙的表面使攀登容易了许多。沟槽的两端都有短小的细槽。下端的细槽与主槽垂直，上端的细槽则与主槽成一个角度相交。<strong>当褐蚁重新踏上峭壁光滑的黑色表面后，它对槽的整体形状有了一个印象：“1”。</strong>…</p>
-<p>很快，<strong>它遇到了另一道沟槽</strong>，它很留恋沟槽那粗糙的凹面，在上面爬行感觉很好，同时槽面的颜色也让它想起了蚁后周围的蚁卵。它不惜向下走回头路，沿着槽爬了一趟。这道槽的形状要复杂些，很弯曲，转了一个完整的圈后再向下延伸一段，让它想起在对气味信息的搜寻后终于找到了回家的路的过程，<strong>它在自己的神经网络中建立起了它的形状：“9”。</strong>…</p>
-<p>褐蚁继续沿着与地面平行的方向爬，<strong>进入了第三道沟槽</strong>，<strong>它是一个近似于直角的转弯，是这样的：“7”。</strong>它不喜欢这形状，平时，这种不平滑的、突然的转向，往往意味着危险和战斗。…</p>
-<p>孤峰上的褐蚁本来想转向向上攀登，<strong>但发现前面还有一道凹槽，同在“7”之前爬过的那个它喜欢的形状“9”一模一样，它就再横行过去，爬了一遍这个“9”。它觉得这个形状比“7”和“1”好，好在哪里当然说不清，这是美感的原始单细胞态；</strong>刚才爬过“9”时的那种模糊的愉悦感再次加强了，这是幸福的原始单细胞态。但这两种精神的单细胞没有进化的机会，现在同一亿年前一样，同一亿年后也一样。</p>
-<p>——《三体》，刘慈欣 著</p>
-</blockquote>
-<h2 id="参考文献">参考文献</h2>
-<div class="footnotes">
-<hr>
-<ol>
-<li id="fn1"><p><a href="http://www.visiondummy.com/2014/04/curse-dimensionality-affect-classification/" target="_blank" rel="external">The Curse of Dimensionality in classification</a>, 中文翻译：<a href="https://zhuanlan.zhihu.com/p/27488363" target="_blank" rel="external">维度灾难</a><a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p>Maaten, L. V. D., &amp; Hinton, G. (2008). Visualizing data using t-SNE. <em>Journal of Machine Learning Research</em>, <em>9</em>(Nov), 2579-2605. <a href="http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref2">↩</a></p></li>
-<li id="fn3"><p>Maaten, L. V. D., &amp; Hinton, G. (2008). Visualizing data using t-SNE. <em>Journal of Machine Learning Research</em>, <em>9</em>(Nov), 2579-2605. <a href="http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref3">↩</a></p></li>
-<li id="fn4"><p>Maaten, L. V. D., &amp; Hinton, G. (2008). Visualizing data using t-SNE. <em>Journal of Machine Learning Research</em>, <em>9</em>(Nov), 2579-2605. <a href="http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref4">↩</a></p></li>
-<li id="fn5"><p><a href="https://www.zhihu.com/question/41106133/answer/154709827" target="_blank" rel="external">有哪些关于流形学习（manifold learning）的好的资料或者课程？</a> - 知乎<a href="#fnref5">↩</a></p></li>
-<li id="fn6"><p>周志华. 机器学习. 第10章.<a href="#fnref6">↩</a></p></li>
-<li id="fn7"><p>Hinton, G. E., &amp; Roweis, S. T. (2003). Stochastic neighbor embedding. In <em>Advances in neural information processing systems</em> (pp. 857-864). <a href="http://papers.nips.cc/paper/2276-stochastic-neighbor-embedding.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref7">↩</a></p></li>
-<li id="fn8"><p>Maaten, L. V. D., &amp; Hinton, G. (2008). Visualizing data using t-SNE. <em>Journal of Machine Learning Research</em>, <em>9</em>(Nov), 2579-2605. <a href="http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref8">↩</a></p></li>
-<li id="fn9"><p>Maaten, L. V. D., &amp; Hinton, G. (2008). Visualizing data using t-SNE. <em>Journal of Machine Learning Research</em>, <em>9</em>(Nov), 2579-2605. <a href="http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref9">↩</a></p></li>
-<li id="fn10"><p>Cook, J., Sutskever, I., Mnih, A., &amp; Hinton, G. (2007, March). Visualizing similarity data with a mixture of maps. In Artificial Intelligence and Statistics (pp. 67-74). <a href="http://proceedings.mlr.press/v2/cook07a/cook07a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref10">↩</a></p></li>
-<li id="fn11"><p>Maaten, L. V. D., &amp; Hinton, G. (2008). Visualizing data using t-SNE. <em>Journal of Machine Learning Research</em>, <em>9</em>(Nov), 2579-2605. <a href="http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref11">↩</a></p></li>
-<li id="fn12"><p>Hinton, G. E., &amp; Roweis, S. T. (2003). Stochastic neighbor embedding. In <em>Advances in neural information processing systems</em> (pp. 857-864). <a href="http://papers.nips.cc/paper/2276-stochastic-neighbor-embedding.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref12">↩</a></p></li>
-<li id="fn13"><p>Hinton, G. E., &amp; Roweis, S. T. (2003). Stochastic neighbor embedding. In <em>Advances in neural information processing systems</em> (pp. 857-864). <a href="http://papers.nips.cc/paper/2276-stochastic-neighbor-embedding.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref13">↩</a></p></li>
-<li id="fn14"><p><a href="https://towardsdatascience.com/reducing-dimensionality-from-dimensionality-reduction-techniques-f658aec24dfe" target="_blank" rel="external">Reducing Dimensionality from Dimensionality Reduction Techniques</a> - medium, 中文翻译：<a href="https://zhuanlan.zhihu.com/p/27935339" target="_blank" rel="external">基于TensorFlow理解三大降维技术：PCA、t-SNE 和自编码器</a> - 机器之心<a href="#fnref14">↩</a></p></li>
-<li id="fn15"><p>Van Der Maaten, L. (2014). Accelerating t-SNE using tree-based algorithms. <em>Journal of machine learning research</em>, <em>15</em>(1), 3221-3245. <a href="http://www.jmlr.org/papers/volume15/vandermaaten14a/vandermaaten14a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref15">↩</a></p></li>
-<li id="fn16"><p><a href="https://towardsdatascience.com/reducing-dimensionality-from-dimensionality-reduction-techniques-f658aec24dfe" target="_blank" rel="external">Reducing Dimensionality from Dimensionality Reduction Techniques</a> - medium, 中文翻译：<a href="https://zhuanlan.zhihu.com/p/27935339" target="_blank" rel="external">基于TensorFlow理解三大降维技术：PCA、t-SNE 和自编码器</a> - 机器之心<a href="#fnref16">↩</a></p></li>
-<li id="fn17"><p>Maaten, L. V. D., &amp; Hinton, G. (2008). Visualizing data using t-SNE. <em>Journal of Machine Learning Research</em>, <em>9</em>(Nov), 2579-2605. <a href="http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref17">↩</a></p></li>
-<li id="fn18"><p>Wattenberg, M., Viégas, F., &amp; Johnson, I. (2016). How to Use t-SNE Effectively. <em>Distill</em>, <em>1</em>(10), e2. <a href="https://distill.pub/2016/misread-tsne/" target="_blank" rel="external">[html]</a><a href="#fnref18">↩</a></p></li>
-<li id="fn19"><p>Wattenberg, M., Viégas, F., &amp; Johnson, I. (2016). How to Use t-SNE Effectively. <em>Distill</em>, <em>1</em>(10), e2. <a href="https://distill.pub/2016/misread-tsne/" target="_blank" rel="external">[html]</a><a href="#fnref19">↩</a></p></li>
-<li id="fn20"><p>Wattenberg, M., Viégas, F., &amp; Johnson, I. (2016). How to Use t-SNE Effectively. <em>Distill</em>, <em>1</em>(10), e2. <a href="https://distill.pub/2016/misread-tsne/" target="_blank" rel="external">[html]</a><a href="#fnref20">↩</a></p></li>
-</ol>
-</div>
-
-          
+基础篇
+认识高维空间：维数灾难
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/12/01/t-sne-a-60-minutes-blitz/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -959,6 +580,17 @@
 
           
           
+             <span id="/2017/10/23/hmm-pos-tagger/" class="leancloud_visitors" data-flag-title="基于HMM模型的词性标注器Python实现">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
 
           
 
@@ -981,185 +613,18 @@
       
         
           
-            <h2 id="说明">说明</h2>
-<ul>
-<li><p>本文代码对应Graham Neubig的<a href="https://github.com/neubig/nlptutorial" target="_blank" rel="external">nlptutorial</a>系列中的第四讲<strong>Part of Speech Tagging with Hidden Markov Models</strong>，主要讲解用<strong>隐马尔科夫模型（Hidden Markov Model，HMM）</strong>实现一个<strong>词性标注器</strong>。</p></li>
-<li><p>对应Slides位于<a href="https://github.com/neubig/nlptutorial/tree/master/download/04-hmm" target="_blank" rel="external">此处</a>。</p></li>
-<li><p>本文的示例代码位于<a href="https://github.com/psubnwell/nlptutorial-exercise/tree/master/exercise/04-hmm" target="_blank" rel="external">此处</a>。</p></li>
-<li>依赖
-<ul>
-<li><code>Python3</code></li>
-<li><code>numpy</code></li>
-</ul></li>
-<li><p>建议在阅读代码（<code>5 HMM 训练</code>~<code>8 HMM 测试（维特比算法）</code>小节）之前，至少需要过一遍简单的真实例子（<code>4 HMM 真实例子</code>小节），知道代码在干什么。也建议快速读一下基础部分（<code>1 生成式模型基础</code>和<code>2 HMM 基础</code>），该部分既不严谨也不全面，但对于阅读代码而言足够。</p></li>
-</ul>
-<h2 id="生成式模型基础">生成式模型基础</h2>
-<ul>
-<li><p><span class="math inline">\(x = x_1, x_2, ..., x_n\)</span> 观察变量，本文中可以视为单词序列。</p></li>
-<li><p><span class="math inline">\(y = y_1, y_2, ..., y_n\)</span> 隐变量（状态变量），本文中可以视为词性序列。</p></li>
-<li><p>问题：给定<span class="math inline">\(x\)</span>，如何求各种<span class="math inline">\(y\)</span>的可能性（即<span class="math inline">\(P(y|x)\)</span>）？或者说，如何求最大可能性的<span class="math inline">\(y\)</span>（即<span class="math inline">\(y=argmax_y P(y|x)\)</span>）？</p></li>
-<li>有两种方法：
-<ul>
-<li>一种方法是直接对<span class="math inline">\(P(y|x)\)</span>建模。叫做<strong>判别式模型（discrimitive model）</strong>；</li>
-<li>另一种方法则迂回一下，将<span class="math inline">\(P(y|x)\)</span>转化为<span class="math inline">\(P(y|x)=\frac{P(x, y)}{P(x)}\)</span>来求解。又因为<span class="math inline">\(P(x, y)\)</span>一般特别难以完全求解，因为 <span class="math display">\[
-\begin{align*}
-P(x, y) &amp;= P(x_1, x_2, ..., x_n, y_1, y_2, ..., y_n) \\
-&amp;= P(x_1)\cdot P(x_2|x_1)\cdot P(x_3|x_1, x_2)\cdot...\cdot  \\
-&amp; P(y_1|x_1, x_2, ..., x_n)\cdot P(y_2|x_1, x_2, ..., x_n, y_1)\cdot...\cdot \\
-&amp; P(y_n|x_1, x_2, ..., x_n, y_1, y_2, ..., y_{n-1})
-\end{align*}
-\]</span> HMM模型和其他一些生成式模型都是在想方设法简化该项的分解形式。一般进一步转化为 <span class="math inline">\(P(y|x)=\frac{P(x|y)P(y)}{P(x)}\)</span>。叫做<strong>生成式模型（generative model）</strong>。之所以叫这个名字，大概是因为这个公式中含有<span class="math inline">\(P(x|y)\)</span>，这个意思是给定标签“生成”数据。一般来说标签数量较少（比如只有几十种词性），而数据是千变万化的（比如有成千上万的单词），“少”的标签去生成“多”的数据，是谓<strong>生成</strong>。</li>
-</ul></li>
-<li><p>大部分情况下我们是已知<span class="math inline">\(x\)</span>，只需求<strong>最有可能</strong>的<span class="math inline">\(y\)</span>，而无需求<strong>所有可能</strong>的<span class="math inline">\(y\)</span>的分布。即：<span class="math display">\[y=argmax_y P(y|x) = argmax_y \frac{P(x|y)P(y)}{P(x)}\]</span> 因为分母和所求参数<span class="math inline">\(y\)</span>无关，因此可以不用求<span class="math inline">\(P(x)\)</span>，省去大量计算。即： <span class="math display">\[y=argmax_y P(y|x) = argmax_y P(x|y)P(y)\]</span> （注：这种方法有个术语。在贝叶斯学派的观念中，参数和变量没有区别，所以可以将变量<span class="math inline">\(y\)</span>视为参数来做估计。这里描述的这种不求完整分布，只需要求能达到最大概率的参数值的方法，在参数估计中叫做<strong>最大后验概率估计（Maximum A Posteriori，MAP）</strong>。）</p></li>
-</ul>
-<h2 id="hmm-基础">HMM 基础</h2>
-<ul>
-<li><p>HMM将公式<span class="math inline">\(y=argmax_y P(y|x) = argmax_y P(x|y)P(y)\)</span>进一步拆解。</p>
-<div class="figure">
-<img src="/2017/10/23/hmm-pos-tagger/hmm_1.png">
+          说明
 
-</div>
-<p>上图中一个灰色椭圆代表一个条件概率。</p></li>
-<li><p>通过<strong>独立输出假设</strong>：每一个观测变量状态跟且仅跟其隐变量状态相关。简化下式： <span class="math display">\[P(x|y)=P(x_1,x_2,...,x_n|y_1, y_2, ..., y_n)=P(x_1|y_1)P(x_2|y_2)...P(x_n|y_n)\]</span></p></li>
-<li><p>通过<strong>马尔可夫假设</strong>：后一状态只与前一状态有关。简化下式： <span class="math display">\[P(y)=P(y_1, y_2, ..., y_n)=P(y_1|&lt;s&gt;)P(y_2|y_1)...P(&lt;/s&gt;|y_n)\]</span> （<code>&lt;s&gt;</code>和<code>&lt;/s&gt;</code>表示句子首尾）</p></li>
-<li><p>所以： <span class="math display">\[
-\begin{align*}
-y &amp;= argmax_y P(y|x) = argmax_y P(x|y)P(y) \\
-&amp;= argmax_{y_1, y_2, ..., y_n} \prod_i^n P(x_i | y_i) \prod_i^n P(y_i|y_{i-1})
-\end{align*}
-\]</span></p></li>
-</ul>
-<h2 id="hmm-真实例子">HMM 真实例子</h2>
-<ul>
-<li><p><span class="math inline">\(x = 你, 很, 美\)</span></p></li>
-<li><p><span class="math inline">\(y = 代词, 副词, 形容词\)</span> （可能的词性序列之一）</p></li>
-<li><p>HMM 的图示如下：</p>
-<div class="figure">
-<img src="/2017/10/23/hmm-pos-tagger/hmm_2.png">
-
-</div></li>
-<li><p>我们问题是：已知<span class="math inline">\(x = 你, 很, 美\)</span>，计算该序列对应的词性序列为<span class="math inline">\(y = 代词, 副词, 形容词\)</span>的概率。</p></li>
-<li><p>由前面的计算公式可知： <span class="math display">\[
-\begin{align*}
-y &amp;= argmax_y P(y|x) = argmax_y \frac{P(x, y)}{P(x)} \\
-&amp;= argmax_y P(x, y) = argmax_y P(x|y)P(y) \\
-&amp;= argmax_{y_1, y_2, ..., y_n} \prod_i^n P(x_i | y_i) \prod_i^n P(y_i|y_{i-1})
-\end{align*}
-\]</span> 这里<span class="math inline">\(y\)</span>有多种可能，这里以<span class="math inline">\(y = 代词, 副词, 形容词\)</span>为例，计算<span class="math inline">\(argmax\)</span>内部的<span class="math inline">\(P(x, y)\)</span>： <span class="math display">\[
-\begin{align*}
-P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;) \\
-&amp;= P(你, 很, 美|&lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;) \cdot \\
-&amp; P(&lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;) \\
-&amp;= [P(你|代词)P(很|副词)P(美|形容词)]\cdot \\
-&amp; [P(代词|&lt;s&gt;)P(副词|代词)P(形容词|副词)P(&lt;/s&gt;|形容词)]
-\end{align*}
-\]</span> 我们要求出每种可能的<span class="math inline">\(y\)</span>序列的<span class="math inline">\(P(x, y)\)</span>值，然后取让其最大的<span class="math inline">\(y\)</span>序列（即<span class="math inline">\(argmax_{y_1, y_2, ..., y_n}\)</span>）。 在按照这样计算每一个<span class="math inline">\(y\)</span>序列之后，取值最大的，返回对应的<span class="math inline">\(y\)</span>序列，就是我们认为正确的词性。</p></li>
-<li><p>“<span class="math inline">\(P(你|代词)P(很|副词)P(美|形容词)\)</span>”叫做<strong>发射概率（emission probability）</strong>，字面意思是从一个词性中<strong>发射/生成</strong>出某一个单词的概率。比如<span class="math inline">\(P(你|代词)\)</span>表示从这么多代词中选一个对应的单词，这个单词为“你”的可能性是多少。</p></li>
-<li><p>“<span class="math inline">\(P(代词|&lt;s&gt;)P(副词|代词)P(形容词|副词)P(&lt;/s&gt;|形容词)\)</span>”叫做<strong>转移概率（transition probability）</strong>，表示从一个词性转移到下一个词性的概率。比如<span class="math inline">\(P(副词|代词)\)</span>表示上一个词的词性是代词，那么下一个词的词性是副词的概率是多少。</p></li>
-<li><p>发射概率和转移概率都可以从标注文档中通过统计得到。</p></li>
-<li><p>HMM 主要分为两部分：训练和解码。分别对应本文档中的<code>5 HMM 训练</code>和<code>8 HMM 测试（维特比算法）</code>。对应代码中的<code>train_hmm.py</code>和<code>test_hmm.py</code>。</p></li>
-<li><p><strong>最后要注意一点是：上面的概率有的值很小，相乘后就更小了，限于计算机的精度，相乘容易造成下溢。一般我们会使用log来将相乘变为相加。</strong>如果使用对数（log）进行处理，则依旧是求<span class="math inline">\(argmax\)</span>；如果使用负对数（-log）进行处理，则改为求<span class="math inline">\(argmin\)</span>。Neubig的Slides中取了负对数，因此我们实验中也取负对数。</p></li>
-</ul>
-<h2 id="hmm-训练">HMM 训练</h2>
-<ul>
-<li><p><code>train_hmm.py</code>的 API 和 main 函数： <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">def train_hmm(training_file, model_file):  # 总函数。</div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    parser = argparse.ArgumentParser()  # 定义命令行传入参数。</div><div class="line">    parser.add_argument(&apos;--training-file&apos;, type=str)</div><div class="line">    parser.add_argument(&apos;--model-file&apos;, type=str, default=&apos;stdout&apos;)</div><div class="line">    args = parser.parse_args()</div><div class="line"></div><div class="line">    train_hmm(args.training_file, args.model_file)</div></pre></td></tr></table></figure></p></li>
-<li><p>输入文件（标注语料）： <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ less data/wiki-en-train.norm_pos</div><div class="line">Natural_JJ language_NN processing_NN -LRB-_-LRB- NLP_NN -RRB-_-RRB- is_VBZ a_DT field_NN of_IN computer_NN science_NN ,_, artificial_JJ intelligence_NN -LRB-_-LRB- also_RB called_VBN machine_NN learning_NN -RRB-_-RRB- ,_, and_CC linguistics_NNS concerned_VBN with_IN the_DT interactions_NNS between_IN computers_NNS and_CC human_JJ -LRB-_-LRB- natural_JJ -RRB-_-RRB- languages_NNS ._.</div><div class="line">...</div></pre></td></tr></table></figure></p></li>
-<li><code>train_hmm()</code>主要做了两件事：
-<ul>
-<li>统计<strong>转移概率（transition probability）</strong>，即连续的两个tag出现的频次/频率，对应HMM模型中的<span class="math inline">\(p(y_i|y_{i-1})\)</span>。</li>
-<li>统计<strong>发射概率（emission probability）</strong>，即某一个tag生成某一个word的频次/频率，对应HMM模型中的<span class="math inline">\(p(x_i|y_i)\)</span>。</li>
-</ul></li>
-<li><p>Demo <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ python3 exercise/04-hmm/train_hmm.py --training-file=&apos;data/wiki-en-train.norm_pos&apos; --model-file=&apos;exercise/04-hmm/my_model&apos;</div></pre></td></tr></table></figure></p></li>
-<li><p>输出文件（模型）： <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">$ less exercise/04-hmm/my_model</div><div class="line">T DT NN 0.5120500782472613 # 以T开头的为转移概率</div><div class="line">T JJ NN 0.4236357765579593 # 表示上一个词性是JJ，则下一个词性是NN的概率为0.424。</div><div class="line">T IN DT 0.33908496732026144</div><div class="line">T NN IN 0.20562700964630226</div><div class="line">T . &lt;/s&gt; 0.9785768936495792</div><div class="line">...</div><div class="line">E NNP Learning 0.000727802037845706 # 以E开头的为发射概率</div><div class="line">E NN markup 0.0001607717041800643 # 表示从所有词性为NN的单词中选到markup的概率是0.00016。</div><div class="line">E NNP HTML 0.000727802037845706</div><div class="line">E NNS formats 0.0003832886163280951</div><div class="line">E NN PDF 0.0001607717041800643</div></pre></td></tr></table></figure></p></li>
-</ul>
-<h2 id="hmm-随机采样">HMM 随机采样</h2>
-<ul>
-<li><p>初始化一个隐变量（词性），让马尔可夫链自动随机生成可观测变量（词）和下一个隐变量（词性），直至遇到<code>EOS</code>为止。</p></li>
-<li><p><code>random_sample.py</code> 该部分不再展示过多细节。核心函数numpy已经实现好了： <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">output_word = np.random.choice(candidate_word, p=candidate_word_prob)</div><div class="line">next_prob = np.random.choice(candidate_tag, p=candidate_tag_prob)</div></pre></td></tr></table></figure></p>
-<p>第一行代码的意思是：（已知一个词性，）在一系列候选单词中，按照它们的分布概率（发射概率），随机选取一个单词作为可观测变量输出。</p>
-<p>第二行代码的意思类似：（已知前一个词性，）在一系列候选词性中，按照它门的分布（迁移概率），随机选取一个词性作为下一个词性输出。</p></li>
-<li><p>Demo： <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ python3 exercise/04-hmm/random_sample.py --model-file=&apos;exercise/04-hmm/my_model&apos;</div></pre></td></tr></table></figure></p>
-<p>多次重复可以得到不同的结果： <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">all the movie .</div><div class="line">how a words alone novel case is those gradual discourse or It is attaching This analyses .</div><div class="line">Journal &apos;s Question Cynthia .</div><div class="line">simplest range segmentation scripts .</div></pre></td></tr></table></figure></p>
-<p>注意，在我们观察输出的搞笑句子时，要想象这个句子由一个隐藏的词性链条在驱动着、生成着。</p></li>
-</ul>
-<h2 id="动态规划思想">动态规划思想</h2>
-<ul>
-<li><p><strong>如果从最佳选择（最短、概率最大、负对数概率最小）的路径的末端截取一小部分，余下的路径仍然是最佳路径。</strong></p></li>
-<li><p>特别关注一点：<strong>路径中的状态交点</strong>。</p>
-<p><img src="/2017/10/23/hmm-pos-tagger/dp_1.png"> <img src="/2017/10/23/hmm-pos-tagger/dp_2.png"></p></li>
-<li><p>动态规划可以解决任何一个图中的最短路径问题。</p>
-<div class="figure">
-<img src="/2017/10/23/hmm-pos-tagger/best_path.png">
-
-</div></li>
-<li>Q：怎么实现DP？ A：两种常用的方法。（仅仅涉及一般问题）
-<ul>
-<li><strong>自下而上</strong>：通过正向的loop，求出所有状态对应的值，然后找出max或者min。 优缺点：速度慢，但是相对节省空间。（本次实验展示的方法。）</li>
-<li><strong>自上而下</strong>：通过递归的方法，需要求解<span class="math inline">\(f(x)\)</span>，则必须知道<span class="math inline">\(f(y)\)</span>，要知道<span class="math inline">\(f(y)\)</span>，必须求<span class="math inline">\(f(z)\)</span>。优缺点：速度快，只用算需要的值，但是要调用堆栈，浪费空间。（<strong>在这种思想中，动态规划实际上是对递归的优化（递归2.0），防止了不必要的递归（递归树中有相同分支）</strong>）。</li>
-</ul></li>
-</ul>
-<h2 id="hmm-测试维特比算法">HMM 测试（维特比算法）</h2>
-<ul>
-<li><p>维特比算法是一个特殊但应用最广的动态规划算法，专门针对一个特殊的图——<strong>篱笆网络（Lattice）</strong>有向图。凡使用HMM描述的问题都可以用它来解码。</p>
-<div class="figure">
-<img src="/2017/10/23/hmm-pos-tagger/lattice.png">
-
-</div></li>
-<li>上图中，每一个单词下方都有一串<strong>候选词性</strong>（句子开始和结尾处的候选词性为<code>&lt;s&gt;</code>和<code>&lt;/s&gt;</code>）。维特比算法中，
-<ul>
-<li>前向部分，我们的任务是计算出<strong>从“初始状态节点（图中的<code>0:&lt;s&gt;</code>）”到每一步中每一个候选隐状态节点（图中的大量灰盒子，如<code>2:NN</code>）的最短路径和对应的概率值</strong>。</li>
-<li>反向部分，根据前面的结果得到一条完整的最佳路径。</li>
-</ul></li>
-<li><p>显然，在每两步之间（图中第<span class="math inline">\(i\)</span>列和第<span class="math inline">\(i\)</span>列）时，根据动态规划思想，我们已经知道、且无需再考虑之前第<span class="math inline">\(0\)</span>列到第<span class="math inline">\(i-1\)</span>列的最佳路径，直接拿来用即可。我们需要做的仅仅是采用两个for循环来对第<span class="math inline">\(i\)</span>列和第<span class="math inline">\(i\)</span>列的候选状态节点进行遍历即可。因此动态规划的复杂度为<span class="math inline">\(O(mn^2)\)</span>（m是序列长度，n是每一层的候选隐状态个数）。</p></li>
-<li><p><code>test_hmm.py</code>的API和 main 函数： <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">def load_model(model_file):  # 用于加载模型。</div><div class="line">def prob_trans(key, model):  # 用于从模型中返回转移概率。</div><div class="line">def prob_emiss(key, model):  # 用于从模型中返回发射概率。</div><div class="line">def forward(transition, emission, possible_tags, line):  # Viterbi算法的正向算法。</div><div class="line">def backward(best_edge, line):  # Viterbi算法的反向算法。</div><div class="line">def test_hmm(model_file, test_file, output_file):  # 总函数。</div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    parser = argparse.ArgumentParser()  # 定义命令行传入参数。</div><div class="line">    parser.add_argument(&apos;--model-file&apos;, type=str)</div><div class="line">    parser.add_argument(&apos;--test-file&apos;, type=str)</div><div class="line">    parser.add_argument(&apos;--output-file&apos;, type=str, default=&apos;stdout&apos;)</div><div class="line">    args = parser.parse_args()</div><div class="line"></div><div class="line">    test_hmm(args.model_file, args.test_file, args.output_file)</div></pre></td></tr></table></figure></p></li>
-<li><strong>前向算法（First Part）</strong>
-<ul>
-<li><strong>使用log是因为原来的概率值相乘，有的数值过小，限于计算机的精度，相乘容易造成下溢。</strong></li>
-<li>下图中，<code>best_score['1 NN']</code>表示从初始节点（<code>'0 &lt;s&gt;'</code>）到该节点（‘1 NN’）的最优路线的值（负对数）。</li>
-<li><code>best_edge['1 NN'] = '0 &lt;s&gt;'</code>（图中没有显示）表示从初始节点（<code>'0 &lt;s&gt;'</code>）到该节点（‘1 NN’）的最优路线中前一个节点是<code>'0 &lt;s&gt;'</code>。</li>
-</ul>
-<div class="figure">
-<img src="/2017/10/23/hmm-pos-tagger/forward_first.png">
-
-</div>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"># First part, described in Neubig&apos;s slides p.38.</div><div class="line">for next in possible_tags.keys():</div><div class="line">    for prev in [SOS]:</div><div class="line">        prev_key = &apos;&#123;&#125; &#123;&#125;&apos;.format(0, prev)</div><div class="line">        next_key = &apos;&#123;&#125; &#123;&#125;&apos;.format(1, next)</div><div class="line">        trans_key = &apos;&#123;&#125; &#123;&#125;&apos;.format(prev, next)</div><div class="line">        emiss_key = &apos;&#123;&#125; &#123;&#125;&apos;.format(next, words[0])</div><div class="line">        if prev_key in best_score and trans_key in transition:</div><div class="line">            score = best_score[prev_key] + \</div><div class="line">                    -math.log2(prob_trans(trans_key, transition)) + \</div><div class="line">                    -math.log2(prob_emiss(emiss_key, emission))</div><div class="line">            if next_key not in best_score or best_score[next_key] &gt; score:</div><div class="line">                best_score[next_key] = score</div><div class="line">                best_edge[next_key] = prev_key</div></pre></td></tr></table></figure></li>
-<li><strong>前向算法（Middle Part）</strong>
-<ul>
-<li><code>best_score['2 NN']</code>表示从初始节点（<code>'0 &lt;s&gt;'</code>）到该节点（‘2 NN’）的最优路线的值（负对数）。因为要取最优，显然<strong>本层每个单元</strong>要对<strong>前一层的所有单元</strong>进行一次计算，然后取最小值。<strong>所以代码中有两个for循环。所以算法复杂度为O(nm^2)。</strong></li>
-<li><code>best_edge['2 NN'] = '1 JJ'</code>（打个比方，图中没有显示）表示从初始节点（<code>'0 &lt;s&gt;'</code>）到该节点（‘2 NN’）的最优路线中前一个节点是<code>'1 JJ'</code>。</li>
-</ul>
-<div class="figure">
-<img src="/2017/10/23/hmm-pos-tagger/forward_middle.png">
-
-</div>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"># Middle part, described in Neubig&apos;s slides p.39.</div><div class="line">for i in range(1, l):</div><div class="line">    for next in possible_tags.keys():</div><div class="line">        for prev in possible_tags.keys():</div><div class="line">            prev_key = &apos;&#123;&#125; &#123;&#125;&apos;.format(i, prev)</div><div class="line">            next_key = &apos;&#123;&#125; &#123;&#125;&apos;.format(i + 1, next)</div><div class="line">            trans_key = &apos;&#123;&#125; &#123;&#125;&apos;.format(prev, next)</div><div class="line">            emiss_key = &apos;&#123;&#125; &#123;&#125;&apos;.format(next, words[i])</div><div class="line">            if prev_key in best_score and trans_key in transition:</div><div class="line">                score = best_score[prev_key] + \</div><div class="line">                        -math.log2(prob_trans(trans_key, transition)) + \</div><div class="line">                        -math.log2(prob_emiss(emiss_key, emission))</div><div class="line">                if next_key not in best_score or best_score[next_key] &gt; score:</div><div class="line">                    best_score[next_key] = score</div><div class="line">                    best_edge[next_key] = prev_key</div></pre></td></tr></table></figure></li>
-<li><p><strong>前向算法（Final Part）</strong></p>
-<div class="figure">
-<img src="/2017/10/23/hmm-pos-tagger/forward_final.png">
-
-</div>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"># Final part, described in Neubig&apos;s slides p.40.</div><div class="line">for next in [EOS]:</div><div class="line">    for prev in possible_tags.keys():</div><div class="line">        prev_key = &apos;&#123;&#125; &#123;&#125;&apos;.format(l, prev)</div><div class="line">        next_key = &apos;&#123;&#125; &#123;&#125;&apos;.format(l + 1, next)</div><div class="line">        trans_key = &apos;&#123;&#125; &#123;&#125;&apos;.format(prev, next)</div><div class="line">        emiss_key = &apos;&#123;&#125; &#123;&#125;&apos;.format(next, EOS)</div><div class="line">        if prev_key in best_score and trans_key in transition:</div><div class="line">            score = best_score[prev_key] + \</div><div class="line">                    -math.log2(prob_trans(trans_key, transition))</div><div class="line">            if next_key not in best_score or best_score[next_key] &gt; score:</div><div class="line">                best_score[next_key] = score</div><div class="line">                best_edge[next_key] = prev_key</div></pre></td></tr></table></figure></li>
-<li><strong>反向算法</strong>
-<ul>
-<li>反向算法即按照前向函数<code>forward()</code>返回的<code>best_edge</code>，从尾到首走一遍即可。</li>
-</ul></li>
-<li><p><strong>Demo</strong></p>
-<p>测试语料内容为： <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ less data/wiki-en-test.norm</div><div class="line">In computational linguistics , word-sense disambiguation -LRB- WSD -RRB- is an open problem of natural language processing , which governs the process of identifying which sense of a word -LRB- i.e. meaning -RRB- is used in a sentence , when the word has multiple meanings -LRB- polysemy -RRB- .</div><div class="line">...</div></pre></td></tr></table></figure></p>
-<p>运行程序： <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ python3 exercise/04-hmm/test_hmm.py --model-file=&apos;exercise/04-hmm/my_model&apos; --test-file=&apos;data/wiki-en-test.norm&apos; --output-file=&apos;exercise/04-hmm/my_answer.pos&apos;</div></pre></td></tr></table></figure></p>
-<p>一般这个程序会跑10s-20s左右。跑得结果： <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ less exercise/04-hmm/my_answer.pos</div><div class="line">IN JJ NNS , DT NN -LRB- NN -RRB- VBZ DT JJ NN IN JJ NN NN , WDT VBZ DT NN IN VBG DT NN IN DT NN -LRB- FW NN -RRB- VBZ VBN IN DT NN , WRB DT NN VBZ JJ NNS -LRB- NN -RRB- .</div><div class="line">...</div></pre></td></tr></table></figure></p></li>
-<li><p>评测性能 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ perl script/gradepos.pl data/wiki-en-test.pos exercise/04-hmm/my_answer.pos</div></pre></td></tr></table></figure></p>
-<p>如果没错的话，你应该看到90.82%的正确率！ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">Accuracy: 90.82% (4144/4563)</div><div class="line"></div><div class="line">Most common mistakes:</div><div class="line">NNS --&gt; NN	45</div><div class="line">NN --&gt; JJ	27</div><div class="line">NNP --&gt; NN	22</div><div class="line">JJ --&gt; DT	22</div><div class="line">VBN --&gt; NN	12</div><div class="line">JJ --&gt; NN	12</div><div class="line">NN --&gt; IN	11</div><div class="line">NN --&gt; DT	10</div><div class="line">NNP --&gt; JJ	8</div><div class="line">JJ --&gt; VBN	7</div></pre></td></tr></table></figure></p></li>
-</ul>
-<h2 id="参考文献">参考文献</h2>
-<ol style="list-style-type: decimal">
-<li><a href="https://github.com/neubig/nlptutorial/tree/master/download/04-hmm" target="_blank" rel="external">Slides of 04-hmm</a> of <a href="https://github.com/neubig/nlptutorial" target="_blank" rel="external">nlptutorial</a>, by Graham Neubig</li>
-<li><a href="http://www.cs.columbia.edu/~mcollins/hmms-spring2013.pdf" target="_blank" rel="external">Lecture Notes</a> of <a href="http://www.cs.columbia.edu/~mcollins/notes-spring2013.html" target="_blank" rel="external">Coursera: Natural Language Process</a>, by Michael Collins</li>
-<li>机器学习, 周志华 著</li>
-<li><a href="https://www.zhihu.com/question/39948290" target="_blank" rel="external">如何理解动态规划？</a>, 知乎</li>
-<li>数学之美, 吴军 著</li>
-</ol>
-
-          
+本文代码对应Graham Neubig的nlptutorial系列中的第四讲Part of Speech Tagging with Hidden Markov Models，主要讲解用隐马尔科夫模型（Hidden Markov Model，HMM）实现一个词性标注器。
+对应Slides位于此
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/10/23/hmm-pos-tagger/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1255,6 +720,17 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
 
           
           
+             <span id="/2017/09/14/test-my-site/" class="leancloud_visitors" data-flag-title="test_my_site">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
 
           
 
@@ -1277,9 +753,16 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
       
         
           
-            
+          
 
           
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/09/14/test-my-site/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1375,6 +858,17 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
 
           
           
+             <span id="/2017/09/14/hello-world/" class="leancloud_visitors" data-flag-title="Hello World">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
 
           
 
@@ -1397,22 +891,15 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
       
         
           
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="quick-start">Quick Start</h2>
-<h3 id="create-a-new-post">Create a new post</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="run-server">Run server</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="generate-static-files">Generate static files</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="deploy-to-remote-sites">Deploy to remote sites</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-          
+          Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/09/14/hello-world/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1560,7 +1047,7 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
 
   <span class="post-meta-divider">|</span>
 
-  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.2</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.2</div>
 
 
         
@@ -1644,13 +1131,6 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
   
   
 
-
-  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
-
-  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
-
-
-
   <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
 
@@ -1700,6 +1180,113 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
 
 
   
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("g6tLhjP8k6Y8FQpuyHG3p7Ro-gzGzoHsz", "5Ji54e8dq5KiHiFrMD3mldo2");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
 
   
 
