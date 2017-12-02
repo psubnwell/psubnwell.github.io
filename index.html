@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next mist use-motion" lang="zh-Hans">
+<html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -112,7 +112,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Mist',
+    scheme: 'Muse',
     version: '5.1.2',
     sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -333,7 +333,8 @@
           Introduction
 
 Visualizes high-dimensional data by giving each data point a location in a 2 or 3-dimensional map.
-Most of these techniques simply provi
+Most of these techniques simply provide tools to display more than two data dimensions, and leave the interpretation of the data to the human observer.
+The aim of dimensionality reduction
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -477,6 +478,10 @@ Most of these techniques simply provi
 
 基础篇
 认识高维空间：维数灾难
+
+维数灾难（curse of dimensionality）描述的是高维空间中若干迥异于低维空间、甚至反直觉的现象。该现象的详细论述可以参考文献1，其中通过超立方体和其内切球的推导十分精彩，这里不再赘述。
+
+高维空间中数据样本极其稀疏。需要维度几何级数的数据才能满足在高维空间密采样（dense s
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -616,7 +621,14 @@ Most of these techniques simply provi
           说明
 
 本文代码对应Graham Neubig的nlptutorial系列中的第四讲Part of Speech Tagging with Hidden Markov Models，主要讲解用隐马尔科夫模型（Hidden Markov Model，HMM）实现一个词性标注器。
-对应Slides位于此
+对应Slides位于此处。
+本文的示例代码位于此处。
+依赖
+
+Python3
+numpy
+
+建议在阅读代码（5 HMM 训练~8 HMM 测试（维特比算法）小节）之前，至少需要过一遍简单的真实例子（4 HMM 真实例子小节），知道代码在干什么。也建议快速读一下基础部分（1 生成式模型基础和2 HMM 基础），该部分既不严
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -891,7 +903,14 @@ Most of these techniques simply provi
       
         
           
-          Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in 
+          Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
+Quick Start
+Create a new post
+1$ hexo new "My New Post"
+More info: Writing
+Run server
+1$ hexo server
+More
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1047,7 +1066,7 @@ Most of these techniques simply provi
 
   <span class="post-meta-divider">|</span>
 
-  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.2</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
 
 
         
