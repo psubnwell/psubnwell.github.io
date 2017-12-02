@@ -79,7 +79,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="HMM, Python, Viterbi," />
+  <meta name="keywords" content="HMM,Python,POS,Viterbi,隐马尔科夫模型,词性标注,维特比算法," />
 
 
 
@@ -96,7 +96,7 @@
 
 
 <meta name="description" content="说明  本文代码对应Graham Neubig的nlptutorial系列中的第四讲Part of Speech Tagging with Hidden Markov Models，主要讲解用隐马尔科夫模型（Hidden Markov Model，HMM）实现一个词性标注器。 对应Slides位于此处。 本文的示例代码位于此处。 依赖  Python3 numpy  建议在阅读代码（5 HMM 训">
-<meta name="keywords" content="HMM, Python, Viterbi">
+<meta name="keywords" content="HMM,Python,POS,Viterbi,隐马尔科夫模型,词性标注,维特比算法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="基于HMM模型的词性标注器Python实现">
 <meta property="og:url" content="http://yoursite.com/2017/10/23/hmm-pos-tagger/index.html">
@@ -112,7 +112,7 @@
 <meta property="og:image" content="http://yoursite.com/2017/10/23/hmm-pos-tagger/forward_first.png">
 <meta property="og:image" content="http://yoursite.com/2017/10/23/hmm-pos-tagger/forward_middle.png">
 <meta property="og:image" content="http://yoursite.com/2017/10/23/hmm-pos-tagger/forward_final.png">
-<meta property="og:updated_time" content="2017-10-23T08:52:11.569Z">
+<meta property="og:updated_time" content="2017-12-01T09:27:19.260Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于HMM模型的词性标注器Python实现">
 <meta name="twitter:description" content="说明  本文代码对应Graham Neubig的nlptutorial系列中的第四讲Part of Speech Tagging with Hidden Markov Models，主要讲解用隐马尔科夫模型（Hidden Markov Model，HMM）实现一个词性标注器。 对应Slides位于此处。 本文的示例代码位于此处。 依赖  Python3 numpy  建议在阅读代码（5 HMM 训">
@@ -336,7 +336,7 @@
 <li><code>Python3</code></li>
 <li><code>numpy</code></li>
 </ul></li>
-<li><p>建议在阅读代码（<code>5 HMM 训练</code>~<code>8 HMM 测试（维特比算法）</code>小节）之前，至少需要过一遍简单的真实例子（<code>4 HMM 真实例子</code>小节），知道代码在干什么。也建议快速读一下基础部分（<code>1 HMM 基础</code>和<code>2 生成式模型基础</code>），该部分既不严谨也不全面，但对于阅读代码而言足够。</p></li>
+<li><p>建议在阅读代码（<code>5 HMM 训练</code>~<code>8 HMM 测试（维特比算法）</code>小节）之前，至少需要过一遍简单的真实例子（<code>4 HMM 真实例子</code>小节），知道代码在干什么。也建议快速读一下基础部分（<code>1 生成式模型基础</code>和<code>2 HMM 基础</code>），该部分既不严谨也不全面，但对于阅读代码而言足够。</p></li>
 </ul>
 <h2 id="生成式模型基础">生成式模型基础</h2>
 <ul>
@@ -421,7 +421,8 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
 <ul>
 <li><p>初始化一个隐变量（词性），让马尔可夫链自动随机生成可观测变量（词）和下一个隐变量（词性），直至遇到<code>EOS</code>为止。</p></li>
 <li><p><code>random_sample.py</code> 该部分不再展示过多细节。核心函数numpy已经实现好了： <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">output_word = np.random.choice(candidate_word, p=candidate_word_prob)</div><div class="line">next_prob = np.random.choice(candidate_tag, p=candidate_tag_prob)</div></pre></td></tr></table></figure></p>
-<p>第一行代码的意思是：（已知一个词性，）在一系列候选单词中，按照它们的分布概率（发射概率），随机选取一个单词作为可观测变量输出。 第二行代码的意思类似：（已知前一个词性，）在一系列候选词性中，按照它门的分布（迁移概率），随机选取一个词性作为下一个词性输出。</p></li>
+<p>第一行代码的意思是：（已知一个词性，）在一系列候选单词中，按照它们的分布概率（发射概率），随机选取一个单词作为可观测变量输出。</p>
+<p>第二行代码的意思类似：（已知前一个词性，）在一系列候选词性中，按照它门的分布（迁移概率），随机选取一个词性作为下一个词性输出。</p></li>
 <li><p>Demo： <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ python3 exercise/04-hmm/random_sample.py --model-file=&apos;exercise/04-hmm/my_model&apos;</div></pre></td></tr></table></figure></p>
 <p>多次重复可以得到不同的结果： <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">all the movie .</div><div class="line">how a words alone novel case is those gradual discourse or It is attaching This analyses .</div><div class="line">Journal &apos;s Question Cynthia .</div><div class="line">simplest range segmentation scripts .</div></pre></td></tr></table></figure></p>
 <p>注意，在我们观察输出的搞笑句子时，要想象这个句子由一个隐藏的词性链条在驱动着、生成着。</p></li>
@@ -519,7 +520,19 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
       
         <div class="post-tags">
           
-            <a href="/tags/HMM-Python-Viterbi/" rel="tag"># HMM, Python, Viterbi</a>
+            <a href="/tags/HMM/" rel="tag"># HMM</a>
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/POS/" rel="tag"># POS</a>
+          
+            <a href="/tags/Viterbi/" rel="tag"># Viterbi</a>
+          
+            <a href="/tags/隐马尔科夫模型/" rel="tag"># 隐马尔科夫模型</a>
+          
+            <a href="/tags/词性标注/" rel="tag"># 词性标注</a>
+          
+            <a href="/tags/维特比算法/" rel="tag"># 维特比算法</a>
           
         </div>
       
@@ -541,6 +554,10 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/01/t-sne-a-60-minutes-blitz/" rel="prev" title="t-SNE简介：A 60 Minute Blitz">
+                t-SNE简介：A 60 Minute Blitz <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -616,7 +633,7 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -629,7 +646,7 @@ P(x, y) &amp;= P(你, 很, 美, &lt;s&gt;, 代词, 副词, 形容词, &lt;/s&gt;
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-count">14</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
