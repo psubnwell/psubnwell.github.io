@@ -118,7 +118,7 @@
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/perp_4.png">
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/perp_5.png">
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/perp_6.png">
-<meta property="og:updated_time" content="2017-12-03T07:55:54.000Z">
+<meta property="og:updated_time" content="2017-12-03T08:18:15.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="t-SNE简介：A 60 Minute Blitz">
 <meta name="twitter:description" content="说明  本文是用作2017-12-03晚晚茶会的试讲大纲。 由于晚茶会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：论文笔记：Visualizing data using t-SNE  基础篇 认识高维空间：维数灾难  维数灾难（curse of dimensionality）描述的是高维空间中若干迥异于低维空间、甚至反直觉的现象。该">
@@ -394,7 +394,7 @@
 <li><strong><a href="https://zh.wikipedia.org/wiki/%E5%B5%8C%E5%85%A5_(%E6%95%B0%E5%AD%A6)" target="_blank" rel="external">嵌入（embedding）</a></strong>：数学上，<strong>嵌入</strong>是指一个数学结构经映射<strong>包含在</strong>另一个结构中。
 <ul>
 <li>NLP目前所使用的<strong>词嵌入（word embedding）</strong>一词的本意可能就是这个意思。最初所使用的词向量是one-hot向量，维度等于词表大小（约几十万）。后来采用分布式表示的词向量，维度一般取几百维。因此我们认为分布式表示的词向量是更高维度语义空间的<strong>低维嵌入（embedding）</strong>。</li>
-<li><strong>Embed Everything！</strong></li>
+<li><strong>“Embed Everything！”</strong> 嵌入的思想不仅可以用在词（word）上，还能用于许多其他技术上。如知识图谱中可以把原先的网络结构也做嵌入，有实体嵌入、关系嵌入等。</li>
 </ul></li>
 <li>降维技术可以分为线性和非线性两大类：
 <ul>
@@ -531,23 +531,23 @@
 <li><p>如何给每个<span class="math inline">\(x_i\)</span>分配<span class="math inline">\(\sigma_i\)</span>值呢？</p>
 <ul>
 <li>可以手动分配（逃，论文原话。。。<a href="#fn13" class="footnoteRef" id="fnref13"><sup>13</sup></a></li>
-<li>使用算法分配：Binary search<a href="#fn14" class="footnoteRef" id="fnref14"><sup>14</sup></a><a href="#fn15" class="footnoteRef" id="fnref15"><sup>15</sup></a> 或者 Root-finding method<a href="#fn16" class="footnoteRef" id="fnref16"><sup>16</sup></a></li>
+<li>使用算法分配：Binary search<a href="#fn14" class="footnoteRef" id="fnref14"><sup>14</sup></a>或者 Root-finding method<a href="#fn15" class="footnoteRef" id="fnref15"><sup>15</sup></a></li>
 </ul></li>
 <li><p>使用算法来确定<span class="math inline">\(\sigma_i\)</span>则要求用户预设困惑度。然后算法找到合适的<span class="math inline">\(\sigma_i\)</span>值让条件分布<span class="math inline">\(P_i\)</span>的困惑度等于用户预定义的困惑度即可。</p>
 <p><span class="math inline">\(Perp(P_i) = 2^{H(P_i)} = 2^{-\sum_j p_{j|i} log_2 p_{j|i}}\)</span></p>
-<p>注意：困惑度设的大，则显然<span class="math inline">\(\sigma_i\)</span>也大。两者是单调关系，因此可以使用binary search<a href="#fn17" class="footnoteRef" id="fnref17"><sup>17</sup></a>。</p></li>
-<li><p>论文<a href="#fn18" class="footnoteRef" id="fnref18"><sup>18</sup></a>建议<strong>困惑度设为5-50比较好</strong>。这还是一个很大的范围，事实上在这个范围内，<strong>调节困惑度可以展示从微观到宏观的一系列视角</strong>，见下一节。</p></li>
+<p>注意：困惑度设的大，则显然<span class="math inline">\(\sigma_i\)</span>也大。两者是单调关系，因此可以使用二分查找。</p></li>
+<li><p>论文<a href="#fn16" class="footnoteRef" id="fnref16"><sup>16</sup></a>建议<strong>困惑度设为5-50比较好</strong>。这还是一个很大的范围，事实上在这个范围内，<strong>调节困惑度可以展示从微观到宏观的一系列视角</strong>，见下一节。</p></li>
 </ul>
 <h3 id="可视化">可视化</h3>
 <ul>
-<li><p>日常使用t-SNE可调的参数基本只有困惑度，非常简单。针对困惑度如何影响可视化结果，文献<a href="#fn19" class="footnoteRef" id="fnref19"><sup>19</sup></a>做了非常详细的展示，还包含一个在线程序可以辅助认识。</p></li>
-<li><p>文献<a href="#fn20" class="footnoteRef" id="fnref20"><sup>20</sup></a>给出的基本结论如下：</p>
+<li><p>日常使用t-SNE可调的参数基本只有困惑度，非常简单。针对困惑度如何影响可视化结果，文献<a href="#fn17" class="footnoteRef" id="fnref17"><sup>17</sup></a>做了非常详细的展示，还包含一个在线程序可以辅助认识。</p></li>
+<li><p>文献<a href="#fn18" class="footnoteRef" id="fnref18"><sup>18</sup></a>给出的基本结论如下：</p>
 <ul>
 <li>簇（cluster）的大小无关紧要。</li>
 <li>簇之间的距离无关紧要。</li>
 <li>密集的区域会被扩大，稀疏的区域会被缩小。等</li>
 </ul></li>
-<li><p>根据文献<a href="#fn21" class="footnoteRef" id="fnref21"><sup>21</sup></a>给的图，说一点自己的理解：</p>
+<li><p>根据文献<a href="#fn19" class="footnoteRef" id="fnref19"><sup>19</sup></a>给的图，说一点自己的理解：</p>
 <div class="figure">
 <img src="/2017/12/01/t-sne-a-60-minutes-blitz/perp_1.png">
 
@@ -615,13 +615,11 @@
 <li id="fn12"><p>Maaten, L. V. D., &amp; Hinton, G. (2008). Visualizing data using t-SNE. <em>Journal of Machine Learning Research</em>, <em>9</em>(Nov), 2579-2605. <a href="http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref12">↩</a></p></li>
 <li id="fn13"><p>Hinton, G. E., &amp; Roweis, S. T. (2003). Stochastic neighbor embedding. In <em>Advances in neural information processing systems</em> (pp. 857-864). <a href="http://papers.nips.cc/paper/2276-stochastic-neighbor-embedding.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref13">↩</a></p></li>
 <li id="fn14"><p>Hinton, G. E., &amp; Roweis, S. T. (2003). Stochastic neighbor embedding. In <em>Advances in neural information processing systems</em> (pp. 857-864). <a href="http://papers.nips.cc/paper/2276-stochastic-neighbor-embedding.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref14">↩</a></p></li>
-<li id="fn15"><p><a href="https://towardsdatascience.com/reducing-dimensionality-from-dimensionality-reduction-techniques-f658aec24dfe" target="_blank" rel="external">Reducing Dimensionality from Dimensionality Reduction Techniques</a> - medium, 中文翻译：<a href="https://zhuanlan.zhihu.com/p/27935339" target="_blank" rel="external">基于TensorFlow理解三大降维技术：PCA、t-SNE 和自编码器</a> - 机器之心<a href="#fnref15">↩</a></p></li>
-<li id="fn16"><p>Van Der Maaten, L. (2014). Accelerating t-SNE using tree-based algorithms. <em>Journal of machine learning research</em>, <em>15</em>(1), 3221-3245. <a href="http://www.jmlr.org/papers/volume15/vandermaaten14a/vandermaaten14a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref16">↩</a></p></li>
-<li id="fn17"><p><a href="https://towardsdatascience.com/reducing-dimensionality-from-dimensionality-reduction-techniques-f658aec24dfe" target="_blank" rel="external">Reducing Dimensionality from Dimensionality Reduction Techniques</a> - medium, 中文翻译：<a href="https://zhuanlan.zhihu.com/p/27935339" target="_blank" rel="external">基于TensorFlow理解三大降维技术：PCA、t-SNE 和自编码器</a> - 机器之心<a href="#fnref17">↩</a></p></li>
-<li id="fn18"><p>Maaten, L. V. D., &amp; Hinton, G. (2008). Visualizing data using t-SNE. <em>Journal of Machine Learning Research</em>, <em>9</em>(Nov), 2579-2605. <a href="http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref18">↩</a></p></li>
+<li id="fn15"><p>Van Der Maaten, L. (2014). Accelerating t-SNE using tree-based algorithms. <em>Journal of machine learning research</em>, <em>15</em>(1), 3221-3245. <a href="http://www.jmlr.org/papers/volume15/vandermaaten14a/vandermaaten14a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref15">↩</a></p></li>
+<li id="fn16"><p>Maaten, L. V. D., &amp; Hinton, G. (2008). Visualizing data using t-SNE. <em>Journal of Machine Learning Research</em>, <em>9</em>(Nov), 2579-2605. <a href="http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref16">↩</a></p></li>
+<li id="fn17"><p>Wattenberg, M., Viégas, F., &amp; Johnson, I. (2016). How to Use t-SNE Effectively. <em>Distill</em>, <em>1</em>(10), e2. <a href="https://distill.pub/2016/misread-tsne/" target="_blank" rel="external">[html]</a><a href="#fnref17">↩</a></p></li>
+<li id="fn18"><p>Wattenberg, M., Viégas, F., &amp; Johnson, I. (2016). How to Use t-SNE Effectively. <em>Distill</em>, <em>1</em>(10), e2. <a href="https://distill.pub/2016/misread-tsne/" target="_blank" rel="external">[html]</a><a href="#fnref18">↩</a></p></li>
 <li id="fn19"><p>Wattenberg, M., Viégas, F., &amp; Johnson, I. (2016). How to Use t-SNE Effectively. <em>Distill</em>, <em>1</em>(10), e2. <a href="https://distill.pub/2016/misread-tsne/" target="_blank" rel="external">[html]</a><a href="#fnref19">↩</a></p></li>
-<li id="fn20"><p>Wattenberg, M., Viégas, F., &amp; Johnson, I. (2016). How to Use t-SNE Effectively. <em>Distill</em>, <em>1</em>(10), e2. <a href="https://distill.pub/2016/misread-tsne/" target="_blank" rel="external">[html]</a><a href="#fnref20">↩</a></p></li>
-<li id="fn21"><p>Wattenberg, M., Viégas, F., &amp; Johnson, I. (2016). How to Use t-SNE Effectively. <em>Distill</em>, <em>1</em>(10), e2. <a href="https://distill.pub/2016/misread-tsne/" target="_blank" rel="external">[html]</a><a href="#fnref21">↩</a></p></li>
 </ol>
 </div>
 
