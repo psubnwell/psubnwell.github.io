@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="zh-Hans">
+<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -79,7 +79,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="t-SNE,Manifold,降维,流形学习," />
+  <meta name="keywords" content="t-SNE,降维,流形学习,Manifold," />
 
 
 
@@ -95,19 +95,22 @@
 
 
 
-<meta name="description" content="说明  本文是用作2017-12-03晚晚茶会的试讲大纲。 由于晚餐会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：论文笔记：Visualizing data using t-SNE  基础篇 认识高维空间：维数灾难  维数灾难（curse of dimensionality）描述的是高维空间中若干迥异于低维空间、甚至反直觉的现象。该">
-<meta name="keywords" content="t-SNE,Manifold,降维,流形学习">
+<meta name="description" content="说明  本文是用作2017-12-03晚晚茶会的试讲大纲。 由于晚茶会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：论文笔记：Visualizing data using t-SNE  基础篇 认识高维空间：维数灾难  维数灾难（curse of dimensionality）描述的是高维空间中若干迥异于低维空间、甚至反直觉的现象。该">
+<meta name="keywords" content="t-SNE,降维,流形学习,Manifold">
 <meta property="og:type" content="article">
 <meta property="og:title" content="t-SNE简介：A 60 Minute Blitz">
 <meta property="og:url" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/index.html">
 <meta property="og:site_name" content="胡东瑶的小屋">
-<meta property="og:description" content="说明  本文是用作2017-12-03晚晚茶会的试讲大纲。 由于晚餐会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：论文笔记：Visualizing data using t-SNE  基础篇 认识高维空间：维数灾难  维数灾难（curse of dimensionality）描述的是高维空间中若干迥异于低维空间、甚至反直觉的现象。该">
+<meta property="og:description" content="说明  本文是用作2017-12-03晚晚茶会的试讲大纲。 由于晚茶会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：论文笔记：Visualizing data using t-SNE  基础篇 认识高维空间：维数灾难  维数灾难（curse of dimensionality）描述的是高维空间中若干迥异于低维空间、甚至反直觉的现象。该">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/high_dim_sparse_data.png">
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/high_dim_marginal_data.png">
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/curse_of_dimensionality.png">
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/manifold_geodesic.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/sne_visualize.png">
 <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Student_t_pdf.svg/325px-Student_t_pdf.svg.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/norm_vs_t_dist.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/t-sne_optimise.gif">
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/sklearn_manifold.png">
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/perp_1.png">
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/perp_2.png">
@@ -115,10 +118,10 @@
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/perp_4.png">
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/perp_5.png">
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/perp_6.png">
-<meta property="og:updated_time" content="2017-12-02T13:46:54.000Z">
+<meta property="og:updated_time" content="2017-12-03T07:55:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="t-SNE简介：A 60 Minute Blitz">
-<meta name="twitter:description" content="说明  本文是用作2017-12-03晚晚茶会的试讲大纲。 由于晚餐会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：论文笔记：Visualizing data using t-SNE  基础篇 认识高维空间：维数灾难  维数灾难（curse of dimensionality）描述的是高维空间中若干迥异于低维空间、甚至反直觉的现象。该">
+<meta name="twitter:description" content="说明  本文是用作2017-12-03晚晚茶会的试讲大纲。 由于晚茶会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：论文笔记：Visualizing data using t-SNE  基础篇 认识高维空间：维数灾难  维数灾难（curse of dimensionality）描述的是高维空间中若干迥异于低维空间、甚至反直觉的现象。该">
 <meta name="twitter:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/high_dim_sparse_data.png">
 
 
@@ -127,7 +130,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Pisces',
     version: '5.1.2',
     sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -343,7 +346,7 @@
         <h2 id="说明">说明</h2>
 <ul>
 <li>本文是用作2017-12-03晚晚茶会的试讲大纲。</li>
-<li>由于晚餐会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：<a href="https://psubnwell.github.io/2017/12/01/paper-note-t-sne/" target="_blank" rel="external">论文笔记：Visualizing data using t-SNE</a></li>
+<li>由于晚茶会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：<a href="https://psubnwell.github.io/2017/12/01/paper-note-t-sne/" target="_blank" rel="external">论文笔记：Visualizing data using t-SNE</a></li>
 </ul>
 <h2 id="基础篇">基础篇</h2>
 <h3 id="认识高维空间维数灾难">认识高维空间：维数灾难</h3>
@@ -388,7 +391,11 @@
 <li>低维空间（low-dimensional space），又叫<strong>嵌入空间（embedded space）</strong>、<strong>低维映射（low-dimensional map</strong>，map在此做名词用）等</li>
 <li>低维数据（low-dimensional data），又叫<strong>低维嵌入（low-dimensional embeddings）</strong>、<strong>低维表示（low-dimensional representations）</strong>、<strong>映射点（map points）</strong>等</li>
 </ul></li>
-<li>【题外话】NLP目前所使用的<strong>词嵌入（word embedding）</strong>一词的本意可能就是这个意思。最初所使用的词向量是one-hot向量，维度等于词表大小（约几十万）。后来采用分布式表示的词向量，维度一般取几百维。因此我们认为分布式表示的词向量是更高维度语义空间的<strong>低维嵌入（embedding）</strong>。</li>
+<li><strong><a href="https://zh.wikipedia.org/wiki/%E5%B5%8C%E5%85%A5_(%E6%95%B0%E5%AD%A6)" target="_blank" rel="external">嵌入（embedding）</a></strong>：数学上，<strong>嵌入</strong>是指一个数学结构经映射<strong>包含在</strong>另一个结构中。
+<ul>
+<li>NLP目前所使用的<strong>词嵌入（word embedding）</strong>一词的本意可能就是这个意思。最初所使用的词向量是one-hot向量，维度等于词表大小（约几十万）。后来采用分布式表示的词向量，维度一般取几百维。因此我们认为分布式表示的词向量是更高维度语义空间的<strong>低维嵌入（embedding）</strong>。</li>
+<li><strong>Embed Everything！</strong></li>
+</ul></li>
 <li>降维技术可以分为线性和非线性两大类：
 <ul>
 <li><strong>线性</strong>降维技术。侧重让<strong>不相似的点</strong>在低维表示中<strong>分开</strong>。
@@ -412,7 +419,7 @@
 
 </div>
 <ul>
-<li><strong><a href="https://zh.wikipedia.org/wiki/%E5%B5%8C%E5%85%A5_(%E6%95%B0%E5%AD%A6)" target="_blank" rel="external">嵌入（embedding）</a></strong>：数学上，<strong>嵌入</strong>是指一个数学结构经映射<strong>包含在</strong>另一个结构中。</li>
+<li>​</li>
 <li><strong>流形（manifold）</strong>：
 <ul>
 <li><strong>机器学习</strong>中指的流形指<strong>本征维度较低</strong>但<strong>嵌入在高维空间</strong>中的<strong>空间</strong>（a manifold has <strong>low intrinsic dimensions</strong>, and is <strong>embedded</strong> within a space of much higher dimensionality<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>）。比如上图中的S-curve数据集，本征维度=2（摊开来是一个二维空间），但被嵌在三维空间中。</li>
@@ -447,7 +454,7 @@
 <p>注意：1）对除i外其他所有j都计算一个条件概率后，形成一个概率分布列，所以分母需要归一化。2）默认<span class="math inline">\(p_{i|i}=0\)</span>。3）每不同数据点<span class="math inline">\(x_i\)</span>有不同的<span class="math inline">\(\sigma_i\)</span>，在此不展开。</p></li>
 <li><p>同理，有低维空间的映射点<span class="math inline">\(y_1, y_2, …, y_n\)</span>（分别对应<span class="math inline">\(x_1, x_2, ..., x_n\)</span>），<span class="math inline">\(q_{j|i}\)</span>是<span class="math inline">\(y_i\)</span>以自己为中心，以高斯分布选择<span class="math inline">\(y_j\)</span>作为近邻点的条件概率。</p>
 <p><span class="math display">\[q_{j|i} = \frac{exp(-||y_i-y_j||^2)}{\sum_{k\neq i}exp(-||y_i-y_k||^2)}\]</span></p>
-<p>注意：若方差取其他值，对结果影响仅仅是缩放而已。</p></li>
+<p>注意：这里方差统一取<span class="math inline">\(\sigma_i=1/\sqrt{2}\)</span>，若方差取其他值，对结果影响仅仅是缩放而已。</p></li>
 <li><p>SNE的目标是让低维分布去拟合高维分布，则目标是令两个分布一致。<strong>两个分布的一致程度</strong>可以使用<strong>相对熵（Mutual entropy，也叫做KL散度，Kullback-Leibler divergences，KLD）</strong>来衡量，可以以此定义<strong>代价函数（cost function）</strong>：</p>
 <p><span class="math display">\[C=\sum_i KL(P_i||Q_i) = \sum_i \sum_j p_{j|i} log\frac{p_{j|i}}{q_{j|i}}\]</span></p>
 <p>其中 <span class="math inline">\(P_i(k=j)=p_{j|i}\)</span> 和 <span class="math inline">\(Q_i(k=j)=q_{j|i}\)</span> 是两个分布列。</p>
@@ -463,10 +470,15 @@
 <li><p><strong>t-Distributed</strong> Stochastic Neighbor Embedding<a href="#fn8" class="footnoteRef" id="fnref8"><sup>8</sup></a></p></li>
 <li><p>事实上SNE并没有解决维度灾难带来的若干问题：</p>
 <ul>
-<li><strong>拥挤问题（Crowding Problem）</strong>：在二维映射空间中，能容纳<strong>（高维空间中的）中等距离间隔点</strong>的空间，不会比能容纳<strong>（高维空间中的）相近点</strong>的空间大太多。<a href="#fn9" class="footnoteRef" id="fnref9"><sup>9</sup></a></li>
-<li>换言之，哪怕高维空间中离得较远的点，在低维空间中留不出这么多空间来映射。于是到最后高维空间中的点，尤其是远距离和中等距离的点，在低维空间中统统被塞在了一起，这就叫做“<strong>拥挤问题（Crowding Problem）</strong>”。</li>
+<li><p><strong>拥挤问题（Crowding Problem）</strong>：在二维映射空间中，能容纳<strong>（高维空间中的）中等距离间隔点</strong>的空间，不会比能容纳<strong>（高维空间中的）相近点</strong>的空间大太多。<a href="#fn9" class="footnoteRef" id="fnref9"><sup>9</sup></a></p></li>
+<li><p>换言之，哪怕高维空间中离得较远的点，在低维空间中留不出这么多空间来映射。于是到最后高维空间中的点，尤其是远距离和中等距离的点，在低维空间中统统被塞在了一起，这就叫做“<strong>拥挤问题（Crowding Problem）</strong>”。</p></li>
+<li><p>拥挤问题带来的一个直接后果，就是高维空间中分离的簇，在低维中被分的不明显（但是可以分成一个个区块）。比如用SNE去可视化MNIST数据集的结果如下：</p>
+<div class="figure">
+<img src="/2017/12/01/t-sne-a-60-minutes-blitz/sne_visualize.png">
+
+</div></li>
 </ul></li>
-<li><p>如何解决？高维空间保持高斯分布不变，将低维空间的分布做调整，使得两边尾巴比高维空间的高斯分布更高，即可缓解拥挤问题。想一想为什么？</p>
+<li><p>如何解决？高维空间保持高斯分布不变，将低维空间的分布做调整，使得两边尾巴比高维空间的高斯分布更高，即可缓解拥挤问题。想一想为什么？(在下面t-分布中解释)</p>
 <ul>
 <li><strong>UNI-SNE</strong><a href="#fn10" class="footnoteRef" id="fnref10"><sup>10</sup></a>：给低维空间的点给予一个<strong>均匀分布（uniform dist）</strong>，使得<strong>对于高维空间中距离较远的点（<span class="math inline">\(p_{ij}\)</span>较小），强制保证在低维空间中<span class="math inline">\(q_{ij}&gt;p_{ij}\)</span></strong> （因为均匀分布的两边比高斯分布的两边高出太多了）。</li>
 </ul></li>
@@ -486,8 +498,22 @@
 <p><span class="math display">\[f(t) = \frac{1}{\sqrt{2\pi}} e^{-\frac{t^2}{2}}\]</span></p>
 <p>叫做<strong>高斯/正态分布（Guassian/Normal distribution）</strong>。</p></li>
 </ul></li>
-<li><p>同样，给低维空间的点给予一个<strong>自由度为1的t-分布</strong>，也能使得<strong>对于高维空间中距离较远的点（<span class="math inline">\(p_{ij}\)</span>较小），强制保证在低维空间中<span class="math inline">\(q_{ij}&gt;p_{ij}\)</span></strong> （由图可知，t分布的两边比高斯分布的两边更高）。</p></li>
-<li><p>以上是t-SNE的主要思想，其余还有若干知识点请参考论文<a href="#fn11" class="footnoteRef" id="fnref11"><sup>11</sup></a>或者我的另一篇博文：<a href="https://psubnwell.github.io/2017/12/01/paper-note-t-sne/" target="_blank" rel="external">论文笔记：Visualizing data using t-SNE</a>。</p></li>
+<li><p>我们在低维空间的分布中，把原先用的高斯分布改成自由度为1的分布（把尾巴抬高）。下图可以很好地说明为什么“把尾巴抬高”可以很好地缓解拥挤问题。绘图代码参考<a href="#fn11" class="footnoteRef" id="fnref11"><sup>11</sup></a></p>
+<div class="figure">
+<img src="/2017/12/01/t-sne-a-60-minutes-blitz/norm_vs_t_dist.png">
+
+</div>
+<p>假设我们的低维数据分布对高维数据分布已经拟合完毕，则可以认为对于高维数据点<span class="math inline">\(x_i\)</span>、<span class="math inline">\(x_j\)</span>和低维映射点<span class="math inline">\(y_i\)</span>、<span class="math inline">\(y_j\)</span>，有<span class="math inline">\(p_{ij}=q_{ij}\)</span>。我们用图中两条红线表示两种情况：</p>
+<ul>
+<li>上面的红线表示：当两个点相距<strong>相对近</strong>的时候，低维空间中比高维空间中<strong>相对更近</strong>。</li>
+<li>下面的红线表示：当两个点相距<strong>相对远</strong>的时候，低维空间中比高维空间中<strong>相对更远</strong>。</li>
+</ul></li>
+<li><p>可以对比一下采用t-SNE对MNIST数据集的降维可视化效果</p>
+<div class="figure">
+<img src="/2017/12/01/t-sne-a-60-minutes-blitz/t-sne_optimise.gif">
+
+</div></li>
+<li><p>以上是t-SNE的主要思想，其余还有若干知识点（如对称SNE、优化的技巧等），请参考论文<a href="#fn12" class="footnoteRef" id="fnref12"><sup>12</sup></a>或者我的另一篇博文：<a href="https://psubnwell.github.io/2017/12/01/paper-note-t-sne/" target="_blank" rel="external">论文笔记：Visualizing data using t-SNE</a>。</p></li>
 </ul>
 <h2 id="工程篇">工程篇</h2>
 <h3 id="python库sklearn.manifold">Python库：<code>sklearn.manifold</code></h3>
@@ -504,24 +530,24 @@
 <li><p>前面提到高维空间中每一个数据点<span class="math inline">\(x_i\)</span>的高斯分布中的方差<span class="math inline">\(\sigma_i\)</span>都必须设为不同。该方差<span class="math inline">\(\sigma_i\)</span>须具有如下性质：在数据密集的地方要小，数据稀疏的地方要大。</p></li>
 <li><p>如何给每个<span class="math inline">\(x_i\)</span>分配<span class="math inline">\(\sigma_i\)</span>值呢？</p>
 <ul>
-<li>可以手动分配（逃，论文原话。。。<a href="#fn12" class="footnoteRef" id="fnref12"><sup>12</sup></a></li>
-<li>使用算法分配：Binary search<a href="#fn13" class="footnoteRef" id="fnref13"><sup>13</sup></a><a href="#fn14" class="footnoteRef" id="fnref14"><sup>14</sup></a> 或者 Root-finding method<a href="#fn15" class="footnoteRef" id="fnref15"><sup>15</sup></a></li>
+<li>可以手动分配（逃，论文原话。。。<a href="#fn13" class="footnoteRef" id="fnref13"><sup>13</sup></a></li>
+<li>使用算法分配：Binary search<a href="#fn14" class="footnoteRef" id="fnref14"><sup>14</sup></a><a href="#fn15" class="footnoteRef" id="fnref15"><sup>15</sup></a> 或者 Root-finding method<a href="#fn16" class="footnoteRef" id="fnref16"><sup>16</sup></a></li>
 </ul></li>
 <li><p>使用算法来确定<span class="math inline">\(\sigma_i\)</span>则要求用户预设困惑度。然后算法找到合适的<span class="math inline">\(\sigma_i\)</span>值让条件分布<span class="math inline">\(P_i\)</span>的困惑度等于用户预定义的困惑度即可。</p>
 <p><span class="math inline">\(Perp(P_i) = 2^{H(P_i)} = 2^{-\sum_j p_{j|i} log_2 p_{j|i}}\)</span></p>
-<p>注意：困惑度设的大，则显然<span class="math inline">\(\sigma_i\)</span>也大。两者是单调关系，因此可以使用binary search<a href="#fn16" class="footnoteRef" id="fnref16"><sup>16</sup></a>。</p></li>
-<li><p>论文<a href="#fn17" class="footnoteRef" id="fnref17"><sup>17</sup></a>建议<strong>困惑度设为5-50比较好</strong>。这还是一个很大的范围，事实上在这个范围内，<strong>调节困惑度可以展示从微观到宏观的一系列视角</strong>，见下一节。</p></li>
+<p>注意：困惑度设的大，则显然<span class="math inline">\(\sigma_i\)</span>也大。两者是单调关系，因此可以使用binary search<a href="#fn17" class="footnoteRef" id="fnref17"><sup>17</sup></a>。</p></li>
+<li><p>论文<a href="#fn18" class="footnoteRef" id="fnref18"><sup>18</sup></a>建议<strong>困惑度设为5-50比较好</strong>。这还是一个很大的范围，事实上在这个范围内，<strong>调节困惑度可以展示从微观到宏观的一系列视角</strong>，见下一节。</p></li>
 </ul>
 <h3 id="可视化">可视化</h3>
 <ul>
-<li><p>日常使用t-SNE可调的参数基本只有困惑度，非常简单。针对困惑度如何影响可视化结果，文献<a href="#fn18" class="footnoteRef" id="fnref18"><sup>18</sup></a>做了非常详细的展示，还包含一个在线程序可以辅助认识。</p></li>
-<li><p>文献<a href="#fn19" class="footnoteRef" id="fnref19"><sup>19</sup></a>给出的基本结论如下：</p>
+<li><p>日常使用t-SNE可调的参数基本只有困惑度，非常简单。针对困惑度如何影响可视化结果，文献<a href="#fn19" class="footnoteRef" id="fnref19"><sup>19</sup></a>做了非常详细的展示，还包含一个在线程序可以辅助认识。</p></li>
+<li><p>文献<a href="#fn20" class="footnoteRef" id="fnref20"><sup>20</sup></a>给出的基本结论如下：</p>
 <ul>
 <li>簇（cluster）的大小无关紧要。</li>
 <li>簇之间的距离无关紧要。</li>
 <li>密集的区域会被扩大，稀疏的区域会被缩小。等</li>
 </ul></li>
-<li><p>根据文献<a href="#fn20" class="footnoteRef" id="fnref20"><sup>20</sup></a>给的图，说一点自己的理解：</p>
+<li><p>根据文献<a href="#fn21" class="footnoteRef" id="fnref21"><sup>21</sup></a>给的图，说一点自己的理解：</p>
 <div class="figure">
 <img src="/2017/12/01/t-sne-a-60-minutes-blitz/perp_1.png">
 
@@ -585,16 +611,17 @@
 <li id="fn8"><p>Maaten, L. V. D., &amp; Hinton, G. (2008). Visualizing data using t-SNE. <em>Journal of Machine Learning Research</em>, <em>9</em>(Nov), 2579-2605. <a href="http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref8">↩</a></p></li>
 <li id="fn9"><p>Maaten, L. V. D., &amp; Hinton, G. (2008). Visualizing data using t-SNE. <em>Journal of Machine Learning Research</em>, <em>9</em>(Nov), 2579-2605. <a href="http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref9">↩</a></p></li>
 <li id="fn10"><p>Cook, J., Sutskever, I., Mnih, A., &amp; Hinton, G. (2007, March). Visualizing similarity data with a mixture of maps. In Artificial Intelligence and Statistics (pp. 67-74). <a href="http://proceedings.mlr.press/v2/cook07a/cook07a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref10">↩</a></p></li>
-<li id="fn11"><p>Maaten, L. V. D., &amp; Hinton, G. (2008). Visualizing data using t-SNE. <em>Journal of Machine Learning Research</em>, <em>9</em>(Nov), 2579-2605. <a href="http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref11">↩</a></p></li>
-<li id="fn12"><p>Hinton, G. E., &amp; Roweis, S. T. (2003). Stochastic neighbor embedding. In <em>Advances in neural information processing systems</em> (pp. 857-864). <a href="http://papers.nips.cc/paper/2276-stochastic-neighbor-embedding.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref12">↩</a></p></li>
+<li id="fn11"><p><a href="http://www.datakit.cn/blog/2017/02/05/t_sne_full.html" target="_blank" rel="external">t-SNE完整笔记</a><a href="#fnref11">↩</a></p></li>
+<li id="fn12"><p>Maaten, L. V. D., &amp; Hinton, G. (2008). Visualizing data using t-SNE. <em>Journal of Machine Learning Research</em>, <em>9</em>(Nov), 2579-2605. <a href="http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref12">↩</a></p></li>
 <li id="fn13"><p>Hinton, G. E., &amp; Roweis, S. T. (2003). Stochastic neighbor embedding. In <em>Advances in neural information processing systems</em> (pp. 857-864). <a href="http://papers.nips.cc/paper/2276-stochastic-neighbor-embedding.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref13">↩</a></p></li>
-<li id="fn14"><p><a href="https://towardsdatascience.com/reducing-dimensionality-from-dimensionality-reduction-techniques-f658aec24dfe" target="_blank" rel="external">Reducing Dimensionality from Dimensionality Reduction Techniques</a> - medium, 中文翻译：<a href="https://zhuanlan.zhihu.com/p/27935339" target="_blank" rel="external">基于TensorFlow理解三大降维技术：PCA、t-SNE 和自编码器</a> - 机器之心<a href="#fnref14">↩</a></p></li>
-<li id="fn15"><p>Van Der Maaten, L. (2014). Accelerating t-SNE using tree-based algorithms. <em>Journal of machine learning research</em>, <em>15</em>(1), 3221-3245. <a href="http://www.jmlr.org/papers/volume15/vandermaaten14a/vandermaaten14a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref15">↩</a></p></li>
-<li id="fn16"><p><a href="https://towardsdatascience.com/reducing-dimensionality-from-dimensionality-reduction-techniques-f658aec24dfe" target="_blank" rel="external">Reducing Dimensionality from Dimensionality Reduction Techniques</a> - medium, 中文翻译：<a href="https://zhuanlan.zhihu.com/p/27935339" target="_blank" rel="external">基于TensorFlow理解三大降维技术：PCA、t-SNE 和自编码器</a> - 机器之心<a href="#fnref16">↩</a></p></li>
-<li id="fn17"><p>Maaten, L. V. D., &amp; Hinton, G. (2008). Visualizing data using t-SNE. <em>Journal of Machine Learning Research</em>, <em>9</em>(Nov), 2579-2605. <a href="http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref17">↩</a></p></li>
-<li id="fn18"><p>Wattenberg, M., Viégas, F., &amp; Johnson, I. (2016). How to Use t-SNE Effectively. <em>Distill</em>, <em>1</em>(10), e2. <a href="https://distill.pub/2016/misread-tsne/" target="_blank" rel="external">[html]</a><a href="#fnref18">↩</a></p></li>
+<li id="fn14"><p>Hinton, G. E., &amp; Roweis, S. T. (2003). Stochastic neighbor embedding. In <em>Advances in neural information processing systems</em> (pp. 857-864). <a href="http://papers.nips.cc/paper/2276-stochastic-neighbor-embedding.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref14">↩</a></p></li>
+<li id="fn15"><p><a href="https://towardsdatascience.com/reducing-dimensionality-from-dimensionality-reduction-techniques-f658aec24dfe" target="_blank" rel="external">Reducing Dimensionality from Dimensionality Reduction Techniques</a> - medium, 中文翻译：<a href="https://zhuanlan.zhihu.com/p/27935339" target="_blank" rel="external">基于TensorFlow理解三大降维技术：PCA、t-SNE 和自编码器</a> - 机器之心<a href="#fnref15">↩</a></p></li>
+<li id="fn16"><p>Van Der Maaten, L. (2014). Accelerating t-SNE using tree-based algorithms. <em>Journal of machine learning research</em>, <em>15</em>(1), 3221-3245. <a href="http://www.jmlr.org/papers/volume15/vandermaaten14a/vandermaaten14a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref16">↩</a></p></li>
+<li id="fn17"><p><a href="https://towardsdatascience.com/reducing-dimensionality-from-dimensionality-reduction-techniques-f658aec24dfe" target="_blank" rel="external">Reducing Dimensionality from Dimensionality Reduction Techniques</a> - medium, 中文翻译：<a href="https://zhuanlan.zhihu.com/p/27935339" target="_blank" rel="external">基于TensorFlow理解三大降维技术：PCA、t-SNE 和自编码器</a> - 机器之心<a href="#fnref17">↩</a></p></li>
+<li id="fn18"><p>Maaten, L. V. D., &amp; Hinton, G. (2008). Visualizing data using t-SNE. <em>Journal of Machine Learning Research</em>, <em>9</em>(Nov), 2579-2605. <a href="http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf" target="_blank" rel="external">[pdf]</a><a href="#fnref18">↩</a></p></li>
 <li id="fn19"><p>Wattenberg, M., Viégas, F., &amp; Johnson, I. (2016). How to Use t-SNE Effectively. <em>Distill</em>, <em>1</em>(10), e2. <a href="https://distill.pub/2016/misread-tsne/" target="_blank" rel="external">[html]</a><a href="#fnref19">↩</a></p></li>
 <li id="fn20"><p>Wattenberg, M., Viégas, F., &amp; Johnson, I. (2016). How to Use t-SNE Effectively. <em>Distill</em>, <em>1</em>(10), e2. <a href="https://distill.pub/2016/misread-tsne/" target="_blank" rel="external">[html]</a><a href="#fnref20">↩</a></p></li>
+<li id="fn21"><p>Wattenberg, M., Viégas, F., &amp; Johnson, I. (2016). How to Use t-SNE Effectively. <em>Distill</em>, <em>1</em>(10), e2. <a href="https://distill.pub/2016/misread-tsne/" target="_blank" rel="external">[html]</a><a href="#fnref21">↩</a></p></li>
 </ol>
 </div>
 
@@ -616,11 +643,11 @@
           
             <a href="/tags/t-SNE/" rel="tag"># t-SNE</a>
           
-            <a href="/tags/Manifold/" rel="tag"># Manifold</a>
-          
             <a href="/tags/降维/" rel="tag"># 降维</a>
           
             <a href="/tags/流形学习/" rel="tag"># 流形学习</a>
+          
+            <a href="/tags/Manifold/" rel="tag"># Manifold</a>
           
         </div>
       
@@ -806,7 +833,7 @@
 
   <span class="post-meta-divider">|</span>
 
-  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.2</div>
 
 
         
@@ -889,6 +916,13 @@
 
   
   
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
 
   <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
