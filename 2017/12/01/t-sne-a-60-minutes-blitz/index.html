@@ -118,7 +118,7 @@
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/perp_4.png">
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/perp_5.png">
 <meta property="og:image" content="http://yoursite.com/2017/12/01/t-sne-a-60-minutes-blitz/perp_6.png">
-<meta property="og:updated_time" content="2017-12-03T08:18:15.000Z">
+<meta property="og:updated_time" content="2018-01-18T12:07:33.589Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="t-SNE简介：A 60 Minute Blitz">
 <meta name="twitter:description" content="说明  本文是用作2017-12-03晚晚茶会的试讲大纲。 由于晚茶会时间有限，本文目的是做成一个60分钟t-SNE闪电入门简介，可能无法详细讲解原理，学术帝请移步我的另一篇博文：论文笔记：Visualizing data using t-SNE  基础篇 认识高维空间：维数灾难  维数灾难（curse of dimensionality）描述的是高维空间中若干迥异于低维空间、甚至反直觉的现象。该">
@@ -419,7 +419,6 @@
 
 </div>
 <ul>
-<li>​</li>
 <li><strong>流形（manifold）</strong>：
 <ul>
 <li><strong>机器学习</strong>中指的流形指<strong>本征维度较低</strong>但<strong>嵌入在高维空间</strong>中的<strong>空间</strong>（a manifold has <strong>low intrinsic dimensions</strong>, and is <strong>embedded</strong> within a space of much higher dimensionality<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>）。比如上图中的S-curve数据集，本征维度=2（摊开来是一个二维空间），但被嵌在三维空间中。</li>
@@ -527,7 +526,8 @@
 <h3 id="困惑度">困惑度</h3>
 <ul>
 <li><p>使用t-SNE时，除了指定你想要降维的维度（参数<code>n_components</code>），另一个重要的参数是困惑度（Perplexity，参数<code>perplexity</code>）。</p></li>
-<li><p>前面提到高维空间中每一个数据点<span class="math inline">\(x_i\)</span>的高斯分布中的方差<span class="math inline">\(\sigma_i\)</span>都必须设为不同。该方差<span class="math inline">\(\sigma_i\)</span>须具有如下性质：在数据密集的地方要小，数据稀疏的地方要大。</p></li>
+<li><p>困惑度大致表示如何在局部或者全局位面上平衡关注点，再说的具体一点就是关于<strong>对每个点周围邻居数量猜测</strong>。困惑度对最终成图有着复杂的影响。</p></li>
+<li><p>前面提到高维空间中每一个数据点<span class="math inline">\(x_i\)</span>的高斯分布中的方差<span class="math inline">\(\sigma_i\)</span>都必须设为不同。该方差<span class="math inline">\(\sigma_i\)</span>须具有如下性质：在数据密集的地方要小，数据稀疏的地方要大。显然<span class="math inline">\(\sigma_i\)</span>和困惑度有着相关关系。</p></li>
 <li><p>如何给每个<span class="math inline">\(x_i\)</span>分配<span class="math inline">\(\sigma_i\)</span>值呢？</p>
 <ul>
 <li>可以手动分配（逃，论文原话。。。<a href="#fn13" class="footnoteRef" id="fnref13"><sup>13</sup></a></li>
@@ -746,7 +746,7 @@
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -759,7 +759,7 @@
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
@@ -817,7 +817,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

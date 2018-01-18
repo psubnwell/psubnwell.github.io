@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="data mining,apriori,fp-growth,数据挖掘," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="本文是哈工大2017年秋季《数据挖掘理论与算法》课程实验第一大题的实验报告。 主要实现了Apriori算法和FP-Growth算法并对他们做了时间、内存性能上的比较。 实验说明书和源代码参见GitHub Repo。实验要求也可以见于每一小节的开头。  Algorithm Implementation  (a) Describe your implementation. If open-sourc">
+<meta name="keywords" content="data mining,apriori,fp-growth,数据挖掘">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Apriori与FP-Growth算法的实现与比较">
+<meta property="og:url" content="http://yoursite.com/2018/01/18/apriori-and-fp-growth/index.html">
+<meta property="og:site_name" content="胡东瑶的小屋">
+<meta property="og:description" content="本文是哈工大2017年秋季《数据挖掘理论与算法》课程实验第一大题的实验报告。 主要实现了Apriori算法和FP-Growth算法并对他们做了时间、内存性能上的比较。 实验说明书和源代码参见GitHub Repo。实验要求也可以见于每一小节的开头。  Algorithm Implementation  (a) Describe your implementation. If open-sourc">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/apriori-and-fp-growth/toy_dataset.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/apriori-and-fp-growth/time_performance.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/apriori-and-fp-growth/memory_performance.png">
+<meta property="og:updated_time" content="2018-01-18T12:27:45.411Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Apriori与FP-Growth算法的实现与比较">
+<meta name="twitter:description" content="本文是哈工大2017年秋季《数据挖掘理论与算法》课程实验第一大题的实验报告。 主要实现了Apriori算法和FP-Growth算法并对他们做了时间、内存性能上的比较。 实验说明书和源代码参见GitHub Repo。实验要求也可以见于每一小节的开头。  Algorithm Implementation  (a) Describe your implementation. If open-sourc">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/18/apriori-and-fp-growth/toy_dataset.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/18/apriori-and-fp-growth/"/>
+
+
+
+
+
+  <title>Apriori与FP-Growth算法的实现与比较 | 胡东瑶的小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">胡东瑶的小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">You Can Advance!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/18/apriori-and-fp-growth/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Dongyao Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="胡东瑶的小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Apriori与FP-Growth算法的实现与比较</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-18T20:10:33+08:00">
+                2018-01-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/01/18/apriori-and-fp-growth/" class="leancloud_visitors" data-flag-title="Apriori与FP-Growth算法的实现与比较">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<p>本文是哈工大2017年秋季《数据挖掘理论与算法》课程实验第一大题的实验报告。</p>
+<p>主要实现了Apriori算法和FP-Growth算法并对他们做了时间、内存性能上的比较。</p>
+<p>实验说明书和源代码参见GitHub Repo。实验要求也可以见于每一小节的开头。</p>
+<hr>
+<h1 id="algorithm-implementation">Algorithm Implementation</h1>
+<blockquote>
+<p><em>(a) Describe your implementation. If open-source software is referenced, please acknowledge the authors of the software.</em></p>
+</blockquote>
+<p>In this project we use <code>Python</code> to implement two different frequent itemset mining algorithms <strong>Apriori</strong> and <strong>FP-Growth</strong>. The basic principle of two algorithms are already introduced in the class. Therefore, we just introduce the basic steps here.</p>
+<p>Machine Learning in Action is the only reference source. We didn’t copy the code but write it again to make them more clear and understandable.</p>
+<h2 id="hardwaresoftware-configuration">Hardware/Software Configuration</h2>
+<ul>
+<li>Hardware</li>
+<li>CPU: Intel(R) Xeon(R) CPU E5-2678 v3 @ 2.50GHz</li>
+<li>Core Number: 48</li>
+<li>Memory: 60G</li>
+<li>Software</li>
+<li>Ubuntu 14.04 LTS</li>
+<li>Python 3.5</li>
+</ul>
+<h2 id="apriori">Apriori</h2>
+<p><strong>Apriori Principle</strong>: The non-empty subsets of a frequent itemset is frequent, which means, the supersets of a infrequent itemset is also infrequent.</p>
+<ul>
+<li>Candidate generate</li>
+<li>Candidate pruning</li>
+</ul>
+<p>The framework / basic APIs of the code is as below, I do the comment to explain the usage of each method. To see the complete code please refer to the appendix.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">candidate_initialize</span><span class="params">(transaction_database)</span>:</span>  <span class="comment"># Generate 1-size candidates (items)</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">support_counting</span><span class="params">(transaction_database, itemset_list)</span>:</span>  <span class="comment"># Scan the database and count the support.</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">candidate_generate</span><span class="params">(itemset_list, k)</span>:</span>  <span class="comment"># Generate k-size candidates in the k-th step. (Combine F_&#123;k-1&#125;xF_&#123;k-1&#125;)</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">candidate_pruning</span><span class="params">(transaction_database, candidate_itemset_list, minsup)</span>:</span>  <span class="comment"># Given the candidates, pruning all infrequent itemsets.</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">apriori</span><span class="params">(transaction_database, minsup=<span class="number">0.5</span>)</span>:</span>  <span class="comment"># The main Apriori algorithm.</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">display</span><span class="params">(frequent_itemset_list, support)</span>:</span>  <span class="comment"># To visualize the result.</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    parser = argparse.ArgumentParser()  <span class="comment"># Define the hyper-parameters.</span></div><div class="line">    parser.add_argument(<span class="string">'--ntrans'</span>, type=float, default=<span class="number">1</span>)</div><div class="line">    parser.add_argument(<span class="string">'--tlen'</span>, type=int, default=<span class="number">10</span>)</div><div class="line">    parser.add_argument(<span class="string">'--nitems'</span>, type=float, default=<span class="number">1</span>)</div><div class="line">    parser.add_argument(<span class="string">'--minsup'</span>, type=float, default=<span class="number">0.5</span>)</div><div class="line">    args = parser.parse_args()</div><div class="line">    transaction_database = load_ibm_dataset(args.ntrans, args.tlen, args.nitems,</div><div class="line">                                            args.npats, args.patlen)</div><div class="line">    frequent_itemset_list, support = apriori(transaction_database, args.minsup)</div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    main()</div></pre></td></tr></table></figure>
+<h2 id="fp-growth">FP Growth</h2>
+<p>FP Growth algorithm applies the Apriori Principle too, instead, it build a FP Tree in the beginning. This data structure helps it to mine the frequent itemsets more effectively.</p>
+<ul>
+<li>Build the FP tree and the header table.</li>
+<li>Recursively generate the conditional pattern bases.</li>
+<li>Mining the tree</li>
+</ul>
+<p>The framework / basic APIs of the code is as below, I do the comment to explain the usage of each method. To see the complete code please refer to the appendix.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TreeNode</span><span class="params">(object)</span>:</span>  <span class="comment"># The basic component in the FP-Tree structure.</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_tree</span><span class="params">(transaction_database, minsup)</span>:</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">update_tree</span><span class="params">(ordered_itemset, fp_tree, header_table)</span>:</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">update_header</span><span class="params">(initial_node, target_node)</span>:</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">ascend_tree</span><span class="params">(leaf_node, prefix_path)</span>:</span>  <span class="comment"># Given a item, backtrack the tree and record the nodes in the path.</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_prefix_path</span><span class="params">(item, header_table)</span>:</span>  <span class="comment"># Given a item, find all prefix paths (which are also call conditional pattern bases).</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">mine_tree</span><span class="params">(fp_tree, header_table, minsup,frequent_itemset=set<span class="params">([])</span>, frequent_itemset_list=[], support_count_list=[])</span>:</span>  <span class="comment"># Recursively apply this method to find the frequent items and the itemsets contain them.</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">display</span><span class="params">(transaction_database, frequent_itemset_list, support_count_list)</span>:</span>  <span class="comment"># To visualize the result.</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    parser = argparse.ArgumentParser()</div><div class="line">    parser.add_argument(<span class="string">'--ntrans'</span>, type=int, default=<span class="number">1</span>)</div><div class="line">    parser.add_argument(<span class="string">'--tlen'</span>, type=int, default=<span class="number">10</span>)</div><div class="line">    parser.add_argument(<span class="string">'--nitems'</span>, type=int, default=<span class="number">1</span>)</div><div class="line">    parser.add_argument(<span class="string">'--minsup'</span>, type=float, default=<span class="number">0.5</span>)</div><div class="line">    args = parser.parse_args()</div><div class="line">    args.minsup *= args.ntrans * <span class="number">1000</span></div><div class="line">    transaction_database = load_ibm_dataset(args.ntrans, args.tlen, args.nitems,</div><div class="line">                                            args.npats, args.patlen)</div><div class="line">    fp_tree, header_table = create_tree(transaction_database, args.minsup)</div><div class="line">    frequent_itemset_list, support_count_list = mine_tree(fp_tree, header_table, args.minsup)</div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    main()</div></pre></td></tr></table></figure>
+<h2 id="verification">Verification</h2>
+<p>We construct a toy transaction dataset to verify whether the programs are implemented correctly. The toy dataset is derived from the handout given by Prof. Zou in class.</p>
+<div class="figure">
+<img src="/2018/01/18/apriori-and-fp-growth/toy_dataset.png">
+
+</div>
+<p>The result of <strong>Apriori</strong> algorithm is as below:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ python apriori.py --minsup=0.5</div><div class="line">&#123;<span class="string">'B'</span>&#125; 				 0.7</div><div class="line">&#123;<span class="string">'A'</span>&#125; 				 0.8</div><div class="line">&#123;<span class="string">'D'</span>&#125; 				 0.5</div><div class="line">&#123;<span class="string">'C'</span>&#125; 				 0.6</div><div class="line">&#123;<span class="string">'B'</span>, <span class="string">'A'</span>&#125; 			 0.5</div><div class="line">&#123;<span class="string">'B'</span>, <span class="string">'C'</span>&#125; 			 0.5</div><div class="line"></div><div class="line">Total 6 frequent itemsets.</div></pre></td></tr></table></figure>
+<p>The result of <strong>FP Growth</strong> algorithm is as below: (with a visualized FP Tree)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">$ python fp_growth.py --minsup=0.5</div><div class="line">[FP Tree]</div><div class="line">  null   1</div><div class="line">   A   8</div><div class="line">    B   5</div><div class="line">     C   3</div><div class="line">      D   1</div><div class="line">     D   1</div><div class="line">    C   1</div><div class="line">     D   1</div><div class="line">      E   1</div><div class="line">    D   1</div><div class="line">     E   1</div><div class="line">   B   2</div><div class="line">    C   2</div><div class="line">     D   1</div><div class="line">     E   1</div><div class="line"></div><div class="line">&#123;<span class="string">'A'</span>&#125; 			 0.8</div><div class="line">&#123;<span class="string">'B'</span>&#125; 			 0.7</div><div class="line">&#123;<span class="string">'B'</span>, <span class="string">'A'</span>&#125; 			 0.5</div><div class="line">&#123;<span class="string">'C'</span>&#125; 			 0.6</div><div class="line">&#123;<span class="string">'B'</span>, <span class="string">'C'</span>&#125; 			 0.5</div><div class="line">&#123;<span class="string">'D'</span>&#125; 			 0.5</div><div class="line"></div><div class="line">Total 6 frequent itemsets.</div></pre></td></tr></table></figure>
+<p>The results indicate the correctness of our implementation.</p>
+<h2 id="parallel-programming">Parallel Programming</h2>
+<p>Since this experiment requires lots of results to observe the impact of several parameters, running the programs one by one may looks clumsy and wastes lots of time. We run our algorithm on a multi-CPU server in parallel. On this point we use a Pythonic way to run our programs in parallel automatically.</p>
+<p>In Python,we can uses a class named <code>multiprocessing.Pool</code> to run multiple command on multiple CPU cores in parallel.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">pool = multiprocessing.Pool(multiprocessing.cpu_count())</div><div class="line">pool.map(os.system, cmd_list)</div></pre></td></tr></table></figure>
+<p>We need to write all bash commands (like <code>python apriori.py</code> with different parameters) in <code>cmd_list</code> (in form of strings). Instance <code>pool</code> will assign each task to a core then <code>os.system</code> will execute each command. In this way, we can run 48 experiment at the same time and save lots of time!</p>
+<h1 id="datasets-generation">Datasets Generation</h1>
+<blockquote>
+<p><em>(b) Generate synthetic datasets using the IBM Synthetic Data Generator for Itemsets and Sequences available at https://github.com/zakimjz/IBMGenerator.</em></p>
+</blockquote>
+<p>In order to fine-tune the parameters we need a more complicated dataset generator rather than some toy datasets. We use the <strong>IBM Synthetic Data Generator</strong> to generate the Itemsets.</p>
+<p>Use the bash commands below to download and compile the tool.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ git <span class="built_in">clone</span> git@github.com:zakimjz/IBMGenerator.git</div><div class="line">$ <span class="built_in">cd</span> IBMGenerator</div><div class="line">$ make</div></pre></td></tr></table></figure>
+<p>Use the bash commands below to generate a toy dataset.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ./gen lit -ntrans 100 -tlen 10 -nitems 1 -npats 1000 -patlen 4 -fname T10I4D100K -ascii</div></pre></td></tr></table></figure>
+<p>Where <code>-ntrans</code> controls <strong>the number of transactions</strong>, <code>-tlen</code> controls <strong>the length of transactions</strong>, <code>-nitems</code> controls <strong>the number of distinct items</strong>. These three arguments are important to us since we need to fine tune them to observe the performance of the algorithms.</p>
+<p>Use the bash commands below to view the dataset.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">$ less T10I4D100K.data</div><div class="line">1 1 7 492 536 586 589 681 861 959</div><div class="line">2 2 7 190 279 541 773 797 801 878</div><div class="line">3 3 3 135 608 876</div><div class="line">4 4 16 19 301 318 364 492 493 586 681 742 797 828 831 861 892 916 959</div><div class="line">5 5 13 66 117 202 388 395 416 419 501 712 741 783 844 989</div><div class="line">...</div><div class="line">99995 99995 5 19 269 755 831 992</div><div class="line">99996 99996 7 78 189 190 241 650 751 882</div><div class="line">99997 99997 9 113 190 275 395 449 592 781 797 936</div><div class="line">99998 99998 13 43 338 364 456 501 614 709 862 888 905 950 951 959</div><div class="line">99999 99999 11 75 101 187 218 221 286 295 562 774 792 925</div><div class="line">100000 100000 17 34 244 261 330 336 396 401 492 521 531 586 617 646 681 861 952 959</div></pre></td></tr></table></figure>
+<p>The 1st column is <code>CustID</code>, 2nd column is <code>TransID</code>, 3rd column is <code>NumItems</code> and the rests are <code>Item</code>s. (We only use the <code>Item</code>s data.)</p>
+<p>Here we encapsulate this data generator into a Python function, which generate the IBM format data and convert to the data that Python can read, like this:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[&#123;<span class="number">492</span>, <span class="number">536</span>, <span class="number">586</span>, <span class="number">589</span>, <span class="number">681</span>, <span class="number">861</span>, <span class="number">959</span>&#125;, &#123;<span class="number">190</span>, <span class="number">279</span>, <span class="number">541</span>, <span class="number">773</span>, <span class="number">797</span>, <span class="number">801</span>, <span class="number">878</span>&#125;, ...]</div></pre></td></tr></table></figure>
+<h1 id="parameters-fine-tuning">Parameters Fine-tuning</h1>
+<blockquote>
+<p><em>(c) Test the impact of the following parameters on the performance (e.g., running time and memory comsumption) of the algorithms.</em></p>
+<p><em>• The minimum support threshold minsup</em></p>
+<p><em>• The number of transactions</em></p>
+<p><em>• The length of transactions</em></p>
+<p><em>• The number of distinct items</em></p>
+</blockquote>
+<p>In this Chapter we will use IBM Synthetic Data Generator and the algorithms we implemented, to fine-tune 4 kinds of parameters as required in the</p>
+<h2 id="tools-evaluation-metrics">Tools &amp; Evaluation Metrics</h2>
+<p>In order to collect the information of time and memory consumed by the algorithms, we introduce a Pythonic way to measure them. we use two powerful tools <code>line_profiler</code> and <code>memory_profiler</code>. In order to install them, just type</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install line_profiler psutil memory_profiler</div></pre></td></tr></table></figure>
+<p>Then insert decorator <code>@profile</code> before the methods we interest in in the code, like this</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@profile</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">apriori</span><span class="params">(transaction_database, minsup=<span class="number">0.5</span>)</span>:</span></div></pre></td></tr></table></figure>
+<p>Then run your code in this way if you want to observe the consumed time:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">$ kernprof -lv apriori.py</div><div class="line">Total time: 309.309 s</div><div class="line">File: apriori.py</div><div class="line">Function: apriori at line 48</div><div class="line"></div><div class="line">Line <span class="comment"># Hits     Time  Per Hit  % Time   Line Contents</span></div><div class="line">========================================================</div><div class="line">48                                      @profile</div><div class="line">49                                      def apriori(transaction_database, minsup=0.5):</div><div class="line">50     1     1106016  1106016    0.4      candidate_1 = candidate_initialize(...)</div><div class="line">53     1     8153210  8153210    2.6      pruned_1, support = candidate_pruning(...)      </div><div class="line">54     1           3      3.0    0.0      frequent_itemset_list = [pruned_1]</div><div class="line">55     1           1      1.0    0.0      k = 2</div><div class="line">56    12          26      2.2    0.0      <span class="keyword">while</span>(len(frequent_itemset_list[k-2]) &gt; 0):</div><div class="line">57    11     4280304 389118.5    1.4          candidate_k = candidate_generate(...)</div><div class="line">58    11   295767919 26887992   95.6          pruned_k, support_k = candidate_pruning(..</div><div class="line">61    11        1092     99.3    0.0          support.update(support_k)</div><div class="line">62    11          44      4.0    0.0          frequent_itemset_list.append(pruned_k)</div><div class="line">63    11          10      0.9    0.0          k += 1</div><div class="line">64     1           0      0.0    0.0      <span class="built_in">return</span> frequent_itemset_list, support</div></pre></td></tr></table></figure>
+<p>… and in this way if you want to observe the consumed memory:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ python -m memory_profiler apriori.py</div><div class="line">Filename: apriori.py</div><div class="line"></div><div class="line">Line <span class="comment">#    Mem usage    Increment   Line Contents</span></div><div class="line">================================================</div><div class="line">    86   35.418 MiB    0.000 MiB   @profile</div><div class="line">    87                             def main():</div><div class="line">    88   36.414 MiB    0.996 MiB       transaction_database = load_ibm_dataset(ntrans, ...</div><div class="line">    89   36.652 MiB    0.238 MiB       apriori(transaction_database, minsup)</div></pre></td></tr></table></figure>
+<p>In this way we can observe the consumed time and memory line by line. We will soon use this tool to collect the data we need.</p>
+<p><strong>☆☆☆ Notice that: Using the <code>line_profiler</code> and <code>memory_profiler</code> will increase the total running time (roughly x1 to x5). The more decorator <code>@profile</code> you add before methods, the slower the program.</strong></p>
+<h2 id="experiment-design">Experiment Design</h2>
+<p>The parameters we set are as follows:</p>
+<ul>
+<li><strong>Default:</strong></li>
+</ul>
+<p><strong>ntrans</strong>=5(k), <strong>tlen</strong>=10, <strong>nitems</strong>=1(k), <strong>minsup</strong>=0.02</p>
+<p>Fine-tune one of the parameter and keep other 3 default. The fine-tuned parameters are set as follows:</p>
+<ul>
+<li><strong>number of transactions(<code>ntrans</code>):</strong></li>
+</ul>
+<p>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20] <em>(Unit: k)</em></p>
+<ul>
+<li><strong>length of transaction(<code>tlen</code>):</strong></li>
+</ul>
+<p>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]</p>
+<ul>
+<li><strong>number of items(<code>nitems</code>):</strong></li>
+</ul>
+<p>[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0] <em>(Unit: k)</em></p>
+<ul>
+<li><strong>minimal support threshold(<code>minsup</code>):</strong></li>
+</ul>
+<p>[0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18 , 0.19, 0.2]</p>
+<p>In this way, we derive 20x4=80 results. We draw four line charts for each fine-tuned parameter as follows:</p>
+<h2 id="time-performance">Time Performance</h2>
+<p>Notice that:</p>
+<ul>
+<li>The red full line represents Apriori, the blue dash line represents FP Growth.</li>
+<li><strong>The real time should divide by roughly 3</strong>, since the <code>line_profiler</code> will make the program slower roughly x1~x5.</li>
+</ul>
+<div class="figure">
+<img src="/2018/01/18/apriori-and-fp-growth/time_performance.png">
+
+</div>
+<p>The figures indicate that:</p>
+<ul>
+<li><strong>Basically, FP Growth algorithm is better than Apriori algorithm at most time.</strong> It is because FP Growth pre-construct a FP Tree data structure to store the item more “tightly”, which facilitate mining.</li>
+<li>With <strong>number of transactions(<code>ntrans</code>)</strong> increasing, both Apriori and FP Growth cost more time. But Apriori cost far more time than FP Growth.</li>
+<li>The <strong>length of transaction(<code>tlen</code>)</strong> behaves just like the <code>ntrans</code>.</li>
+<li>The variation of the <strong>number of items(<code>nitems</code>)</strong> seems impact less on the time performance.</li>
+<li>With the <strong>minimal support threshold(<code>minsup</code>)</strong> increasing, both algorithms run faster and their performance become alike. It is because Apriori is able to prune most of candidate itemsets at each step and converges quickly. <strong>So, if we want a shorter running time, just make this parameter smaller.</strong></li>
+</ul>
+<h2 id="spacememory-performance">Space/Memory Performance</h2>
+<p>Notice that:</p>
+<ul>
+<li>The red full line represents Apriori, the blue dash line represents FP Growth.</li>
+</ul>
+<div class="figure">
+<img src="/2018/01/18/apriori-and-fp-growth/memory_performance.png">
+
+</div>
+<p>The figures indicate that:</p>
+<ul>
+<li><strong>Basically, the FP Growth takes more memory than Apriori. It is because of not only the pre-construction of FP Tree, but also the recursive construction of conditional FP Tree (the mining procedure).</strong></li>
+<li>With the <strong>number of transactions(<code>ntrans</code>)</strong> increasing, FP Growth’s memory consumption increases linearly. But Apriori’s memory consumption stays steady.</li>
+<li>With the <strong>length of transaction(<code>tlen</code>)</strong> increasing, both Apriori and FP Growth consume more memory.</li>
+<li>The variation of the <strong>number of items(<code>nitems</code>)</strong> seems impact less on the memory performance.</li>
+<li>With the <strong>minimal support threshold(<code>minsup</code>)</strong> increasing, both algorithms consume less memory and their performance become alike.</li>
+</ul>
+<h1 id="detailed-time-analysis">Detailed Time Analysis</h1>
+<blockquote>
+<p><em>(d) Test the running time taken by each major procedure of the algorithms, for example, candidate generation, candidate pruning, and support counting of the Apriori algorithm.</em></p>
+</blockquote>
+<p>In this Chapter we still use the powerful tool <code>line_profiler</code> to analyze the running time taken by each major procedure of the algorithms. The content of log files are shown in <a href="###%203.1%20Tools%20&amp;%20Evaluation%20Metrics">3.1 Tools &amp; Evaluation Metrics</a> so we won’t explain again.</p>
+<p>Since different parameters result in different performance, we randomly sample several of them to analyze.</p>
+<p>Notice that:</p>
+<ul>
+<li>the absolute value of time may be meaningless due to the different parameters. We should take focus on their proportion (%) in the whole run time of algorithm.</li>
+<li>The whole run time of the algorithm doesn’t include the time to pre-process the dataset.</li>
+</ul>
+<h2 id="apriori-1">Apriori</h2>
+<p>There are three major procedures in Apriori, <strong>“support counting”</strong>, <strong>“candidate generation”</strong> and <strong>“candidate pruning”</strong>.</p>
+<p>Notice that:</p>
+<ul>
+<li>“support counting” is part of “candidate pruning”.</li>
+</ul>
+<table style="width:100%;">
+<colgroup>
+<col width="17%">
+<col width="20%">
+<col width="5%">
+<col width="24%">
+<col width="5%">
+<col width="21%">
+<col width="5%">
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">parameters</th>
+<th align="center">support counting (μs)</th>
+<th align="center">%</th>
+<th align="center">candidate generation (μs)</th>
+<th align="center">%</th>
+<th align="center">candidate pruning (μs)</th>
+<th align="center">%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1k, 10, 1k, 0.05</td>
+<td align="center">3868041</td>
+<td align="center">81.50</td>
+<td align="center">868597</td>
+<td align="center">18.30</td>
+<td align="center">3877056</td>
+<td align="center">81.68</td>
+</tr>
+<tr class="even">
+<td align="center">5k, 10, 1k, 0.05</td>
+<td align="center">23639936</td>
+<td align="center">94.46</td>
+<td align="center">1376908</td>
+<td align="center">5.50</td>
+<td align="center">23649498</td>
+<td align="center">94.49</td>
+</tr>
+<tr class="odd">
+<td align="center">5k, 20, 1k, 0.05</td>
+<td align="center">45091836</td>
+<td align="center">91.55</td>
+<td align="center">4144611</td>
+<td align="center">8.41</td>
+<td align="center">45108920</td>
+<td align="center">91.58</td>
+</tr>
+<tr class="even">
+<td align="center">5k, 10, 0.1k, 0.05</td>
+<td align="center">24750085</td>
+<td align="center">93.99</td>
+<td align="center">1557087</td>
+<td align="center">5.91</td>
+<td align="center">24775948</td>
+<td align="center">94.08</td>
+</tr>
+<tr class="odd">
+<td align="center">5k, 10, 1k, 0.20</td>
+<td align="center">786266</td>
+<td align="center">71.57</td>
+<td align="center">311974</td>
+<td align="center">28.40</td>
+<td align="center">786564</td>
+<td align="center">71.60</td>
+</tr>
+</tbody>
+</table>
+<p>The table above indicates that:</p>
+<ul>
+<li>“Support counting” takes nearly almost all time in the “candidate pruning”. Because each time the Apriori does the pruning operation, it need to scan the whole transaction database and count the support of the itemsets.</li>
+<li>In most cases, “candidate pruning” takes far more time than “candidate generation”.</li>
+</ul>
+<h2 id="fp-growth-1">FP Growth</h2>
+<p>There are three major procedures in FP Growth, <strong>“create tree”</strong>, <strong>“find prefix path”</strong> and <strong>“mine tree”</strong>.</p>
+<p>Notice that:</p>
+<ul>
+<li>“create tree” means creating the first and complete FP Tree, not conditional FP Tree, which is part of “mine tree”.</li>
+<li>“find prefix” is part of “mine tree”.</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th align="center">parameters</th>
+<th align="center">create tree (μs)</th>
+<th align="center">%</th>
+<th align="center">find prefix path (μs)</th>
+<th align="center">%</th>
+<th align="center">mine tree (μs)</th>
+<th align="center">%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1k, 10, 1k, 0.05</td>
+<td align="center">215754</td>
+<td align="center">11.93</td>
+<td align="center">123851</td>
+<td align="center">6.85</td>
+<td align="center">1593375</td>
+<td align="center">88.07</td>
+</tr>
+<tr class="even">
+<td align="center">5k, 10, 1k, 0.05</td>
+<td align="center">3185766</td>
+<td align="center">25.52</td>
+<td align="center">409409</td>
+<td align="center">3.28</td>
+<td align="center">9299374</td>
+<td align="center">74.48</td>
+</tr>
+<tr class="odd">
+<td align="center">5k, 20, 1k, 0.05</td>
+<td align="center">14591858</td>
+<td align="center">44.46</td>
+<td align="center">1242425</td>
+<td align="center">3.78</td>
+<td align="center">18226332</td>
+<td align="center">55.54</td>
+</tr>
+<tr class="even">
+<td align="center">5k, 10, 0.1k, 0.05</td>
+<td align="center">6988338</td>
+<td align="center">41.62</td>
+<td align="center">540334</td>
+<td align="center">3.22</td>
+<td align="center">9802346</td>
+<td align="center">58.38</td>
+</tr>
+<tr class="odd">
+<td align="center">5k, 10, 1k, 0.20</td>
+<td align="center">252681</td>
+<td align="center">96.99</td>
+<td align="center">182</td>
+<td align="center">0.07</td>
+<td align="center">7829</td>
+<td align="center">3.01</td>
+</tr>
+</tbody>
+</table>
+<p>The table above indicates that:</p>
+<ul>
+<li>FP Growth takes a long time (usually 10%-50%) to build a FP Tree before mining, which helps it save more time in the mining procedure.</li>
+<li>When <code>minsup</code> is large, building a FP Tree, in fact, is not necessary. Due to this, the Apriori performs well in this situation.</li>
+</ul>
+<h1 id="reference">Reference</h1>
+<ul>
+<li><em>Machine Learning in Action, Peter Harrington</em>
+<ul>
+<li>Notice that the code in <em>Chapter 12 Efficiently finding frequent itemsets with FP-growth</em> has some bugs, which make the tree built incorrectly.</li>
+</ul></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/data-mining/" rel="tag"># data mining</a>
+          
+            <a href="/tags/apriori/" rel="tag"># apriori</a>
+          
+            <a href="/tags/fp-growth/" rel="tag"># fp-growth</a>
+          
+            <a href="/tags/数据挖掘/" rel="tag"># 数据挖掘</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/01/paper-note-t-sne/" rel="next" title="论文笔记：Visualizing data using t-SNE">
+                <i class="fa fa-chevron-left"></i> 论文笔记：Visualizing data using t-SNE
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <p class="site-author-name" itemprop="name">Dongyao Hu</p>
+            <p class="site-description motion-element" itemprop="description">You Can Advance!</p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#algorithm-implementation"><span class="nav-number">1.</span> <span class="nav-text">Algorithm Implementation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#hardwaresoftware-configuration"><span class="nav-number">1.1.</span> <span class="nav-text">Hardware/Software Configuration</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#apriori"><span class="nav-number">1.2.</span> <span class="nav-text">Apriori</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fp-growth"><span class="nav-number">1.3.</span> <span class="nav-text">FP Growth</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#verification"><span class="nav-number">1.4.</span> <span class="nav-text">Verification</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#parallel-programming"><span class="nav-number">1.5.</span> <span class="nav-text">Parallel Programming</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#datasets-generation"><span class="nav-number">2.</span> <span class="nav-text">Datasets Generation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#parameters-fine-tuning"><span class="nav-number">3.</span> <span class="nav-text">Parameters Fine-tuning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#tools-evaluation-metrics"><span class="nav-number">3.1.</span> <span class="nav-text">Tools & Evaluation Metrics</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#experiment-design"><span class="nav-number">3.2.</span> <span class="nav-text">Experiment Design</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#time-performance"><span class="nav-number">3.3.</span> <span class="nav-text">Time Performance</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spacememory-performance"><span class="nav-number">3.4.</span> <span class="nav-text">Space/Memory Performance</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#detailed-time-analysis"><span class="nav-number">4.</span> <span class="nav-text">Detailed Time Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#apriori-1"><span class="nav-number">4.1.</span> <span class="nav-text">Apriori</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fp-growth-1"><span class="nav-number">4.2.</span> <span class="nav-text">FP Growth</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Dongyao Hu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("g6tLhjP8k6Y8FQpuyHG3p7Ro-gzGzoHsz", "5Ji54e8dq5KiHiFrMD3mldo2");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
